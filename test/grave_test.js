@@ -1,6 +1,9 @@
 const GraveContract = artifacts.require("Grave");
+const truffleAssert = require('truffle-assertions');
 
 contract("Grave", accounts => {
+    let grave;
+
     const name = "name";
     const birth = -1518825600;
     const death = 1639958400;
@@ -35,6 +38,12 @@ contract("Grave", accounts => {
         it("owner(inheritor)", async() => {
             const actual = await grave.owner();
             assert.equal(actual, inheritor, "owner should match");
+        });
+
+        it("emits the Created event", async() => {
+            const txHash = grave.transactionHash;
+            const txResult = await truffleAssert.createTransactionResult(grave, txHash);
+            truffleAssert.eventEmitted(txResult, "Created");
         });
     });
 

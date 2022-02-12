@@ -4,6 +4,8 @@ pragma solidity >=0.4.22 <0.9.0;
 import "../node_modules/openzeppelin-solidity/contracts/access/Ownable.sol";
 
 contract Grave is Ownable {
+    event Created(address indexed inheritor);
+
     string public name;
     int256 public birth;
     int256 public death;
@@ -15,6 +17,8 @@ contract Grave is Ownable {
         death = _death;
         portraitURL = _portraitURL;
         transferOwnership(_inheritor);
+
+        emit Created(_inheritor);
     }
 
     function setPortraitURL(string memory _portraitURL) public onlyOwner {
