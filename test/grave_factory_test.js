@@ -1,4 +1,5 @@
 const GraveFactoryContract = artifacts.require("GraveFactory");
+const GraveContract = artifacts.require("Grave");
 
 contract("GraveFactory: deployment", accounts => {
     const owner = accounts[0];
@@ -72,4 +73,41 @@ contract("GraveFactory: operations", accounts => {
         });
     });
 
+    describe("varing offset", () => {
+        let factory;
+        const inheritor = accounts[1];
+        const factoryOwner = accounts[0];
+
+        beforeEach(async () => {
+            factory = await createFactory(10, inheritor, factoryOwner);
+        });
+
+        it("contains appropriate property: low boundary", async() => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            const grave = await GraveContract.at(graves[0]);
+            const actual = await grave.name();
+            assert.equal(actual, `${name} 0`, "name should match");
+        });
+
+        it("contains appropriate property: start in the middle", async() => {
+            const graves = await factory.associatedGraves(1, 1, {from: inheritor});
+            const grave = await GraveContract.at(graves[0]);
+            const actual = await grave.name();
+            assert.equal(actual, `${name} 1`, "name should match");
+        });
+
+        it("contains appropriate property: end at just high boundary", async() => {
+            const graves = await factory.associatedGraves(9, 1, {from: inheritor});
+            const grave = await GraveContract.at(graves[graves.length-1]);
+            const actual = await grave.name();
+            assert.equal(actual, `${name} 9`, "name should match");
+        });
+
+        it("contains appropriate property: exceeds high boundary", async() => {
+            const graves = await factory.associatedGraves(10, 5, {from: inheritor});
+            const grave = await GraveContract.at(graves[graves.length-1]);
+            const actual = await grave.name();
+            assert.equal(actual, `${name} 9`, "name should match");
+        });
+    });
 });
