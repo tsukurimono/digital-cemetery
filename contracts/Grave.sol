@@ -5,6 +5,8 @@ import "../node_modules/openzeppelin-solidity/contracts/access/Ownable.sol";
 
 contract Grave is Ownable {
     event Created(address indexed inheritor);
+    event PortraitUpdated(address indexed inheritor);
+    event Inherited(address indexed currentInheritor, address indexed newInheritor);
 
     string public name;
     int256 public birth;
@@ -17,15 +19,16 @@ contract Grave is Ownable {
         death = _death;
         portraitURL = _portraitURL;
         transferOwnership(_inheritor);
-
         emit Created(_inheritor);
     }
 
     function setPortraitURL(string memory _portraitURL) public onlyOwner {
         portraitURL = _portraitURL;
+        emit PortraitUpdated(msg.sender);
     }
 
     function inherit(address _inheritor) public onlyOwner {
         transferOwnership(_inheritor);
+        emit Inherited(msg.sender, this.owner());
     }
 }

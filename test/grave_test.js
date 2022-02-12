@@ -70,6 +70,13 @@ contract("Grave", accounts => {
                 assert.equal(actualError, expectedError, "should not be permitted");
             }
         });
+
+        it("emits PortraitUpdated event", async() => {
+            const tx = await grave.setPortraitURL(newPortraitURL, {from: inheritor});
+            const expectedEvent = "PortraitUpdated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
     });
 
     describe("inherit", async() => {
@@ -94,6 +101,18 @@ contract("Grave", accounts => {
                 const actualError = err.reason;
                 assert.equal(actualError, expectedError, "should not be permitted");
             }
+        });
+
+        it("emits Inherited event", async() => {
+            const tx = await grave.inherit(newInheritor, {from: inheritor});
+
+            const expectedEvent0 = "OwnershipTransferred";
+            const actualEvent0 = tx.logs[0].event;
+            assert.equal(actualEvent0, expectedEvent0, "events should match");
+
+            const expectedEvent1 = "Inherited";
+            const actualEvent1 = tx.logs[1].event;
+            assert.equal(actualEvent1, expectedEvent1, "events should match");
         });
     });
 });
