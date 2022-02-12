@@ -62,4 +62,29 @@ contract("Grave", accounts => {
             }
         });
     });
+
+    describe("inherit", async() => {
+        const newInheritor = accounts[2];
+
+        it("inherit when called by inheritor account", async() => {
+            try {
+                await grave.inherit(newInheritor, {from: inheritor});
+                const actual = await grave.owner();
+                assert.equal(actual, newInheritor, "inheritor should match");
+            } catch(err) {
+                assert.fail("error shouldn't occur");
+            }
+        });
+
+        it("throws an error when called from non-inheritor account", async() => {
+            try {
+                await grave.inherit(newInheritor, {from: accounts[1]});
+                assert.fail("not restricted by inheritor");
+            } catch(err) {
+                const expectedError = "Ownable: caller is not the owner";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+    });
 });

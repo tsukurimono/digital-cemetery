@@ -20,4 +20,8 @@ contract Grave is Ownable {
     function setPortraitURL(string memory _portraitURL) public onlyOwner {
         portraitURL = _portraitURL;
     }
+
+    function inherit(address _inheritor) public onlyOwner {
+        transferOwnership(_inheritor);
+    }
 }
