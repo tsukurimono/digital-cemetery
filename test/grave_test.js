@@ -37,4 +37,29 @@ contract("Grave", accounts => {
             assert.equal(actual, inheritor, "owner should match");
         });
     });
+
+    describe("set portraitURL", async() => {
+        const newPortraitURL = "https://digital-graves/hoge/piyo";
+
+        it("updated portraitURL when called by inheritor account", async() => {
+            try {
+                await grave.setPortraitURL(newPortraitURL, {from: inheritor});
+                const actual = await grave.portraitURL();
+                assert.equal(actual, newPortraitURL, "portraitURL should match");
+            } catch(err) {
+                assert.fail("error shouldn't occur");
+            }
+        });
+
+        it("throws an error when called from non-inheritor account", async() => {
+            try {
+                await grave.setPortraitURL(newPortraitURL, {from: accounts[1]});
+                assert.fail("not restricted by inheritor");
+            } catch(err) {
+                const expectedError = "Ownable: caller is not the owner";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+    });
 });
