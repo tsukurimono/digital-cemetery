@@ -31,4 +31,8 @@ contract GraveFactory {
         }
         return coll;
     }
+
+    function associateGrave(address graveAddress) public {
+        _graves[msg.sender].push(Grave(graveAddress));
+    }
 }

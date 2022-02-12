@@ -97,4 +97,30 @@ contract("GraveFactory: operations", accounts => {
             assert.equal(actual, `${name} 9`, "name should match");
         });
     });
+
+    describe("associateGrave", () => {
+        let factory;
+        const inheritor = accounts[1];
+        const associateAccount = accounts[2];
+
+        beforeEach(async () => {
+            factory = await createFactory(1, inheritor);
+        });
+
+        it("associated graves count should increment by 1", async () => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: associateAccount});
+            await factory.associateGrave(graves[0], {from: associateAccount});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: associateAccount});
+            assert.equal(1, newAssociatedGravesCount - currentAssociatedGravesCount, "should increment by 1");
+        });
+
+        it("inheritor's association still remain", async () => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            await factory.associateGrave(graves[0], {from: associateAccount});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            assert.equal(0, newAssociatedGravesCount - currentAssociatedGravesCount, "should be same");
+        });
+    });
 });
