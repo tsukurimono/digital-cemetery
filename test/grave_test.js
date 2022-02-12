@@ -5,9 +5,10 @@ contract("Grave", accounts => {
     const birth = -1518825600;
     const death = 1639958400;
     const portraitURL = "https://digital-graves/boo/bar"
+    const inheritor = accounts[0];
 
     beforeEach(async() => {
-        grave = await GraveContract.new(name, birth, death, portraitURL);
+        grave = await GraveContract.new(name, birth, death, portraitURL, inheritor);
     });
 
     describe("initialization", () => {
@@ -29,6 +30,11 @@ contract("Grave", accounts => {
         it("portraitURL", async() => {
             const actual = await grave.portraitURL();
             assert.equal(actual, portraitURL, "portraitURL should match");
+        });
+
+        it("owner(inheritor)", async() => {
+            const actual = await grave.owner();
+            assert.equal(actual, inheritor, "owner should match");
         });
     });
 });
