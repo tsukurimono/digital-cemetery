@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "../node_modules/openzeppelin-solidity/contracts/access/Ownable.sol";
 import "./Grave.sol";
 
-contract GraveFactory is Ownable {
+contract GraveFactory {
     mapping(address => Grave[]) private _graves;
     uint256 constant maxLimit = 20;
 
-    constructor() {
-        transferOwnership(msg.sender);
-    }
+    constructor() { }
 
     function associatedGravesCount() public view returns(uint256) {
         return _graves[msg.sender].length;

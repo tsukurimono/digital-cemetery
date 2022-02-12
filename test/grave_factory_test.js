@@ -2,19 +2,9 @@ const GraveFactoryContract = artifacts.require("GraveFactory");
 const GraveContract = artifacts.require("Grave");
 
 contract("GraveFactory: deployment", accounts => {
-    const owner = accounts[0];
-
     it("has been deployed", async () => {
         const graveFactoryContract = await GraveFactoryContract.deployed();
         assert(graveFactoryContract, "was not deployed");
-    });
-
-    describe("initialize", () => {
-        it("owner", async() => { 
-            const graveFactoryContract = await GraveFactoryContract.new({from:owner});
-            const actual = await graveFactoryContract.owner();
-            assert.equal(actual, owner, "owner should match");
-        });
     });
 });
 
@@ -24,11 +14,10 @@ contract("GraveFactory: operations", accounts => {
     const death = 1639958400;
     const portraitURL = "https://digital-graves/boo/bar"
     const sender = accounts[1];
-    const owner = accounts[0];
 
     describe("creation", () => {
         it("associated graves count should increment by 1", async() => {
-            const graveFactoryContract = await GraveFactoryContract.new({from: owner});
+            const graveFactoryContract = await GraveFactoryContract.new();
             const currentAssociatedGravesCount = await graveFactoryContract.associatedGravesCount({from: sender});
             await graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
             const newAssociatedGravesCount = await graveFactoryContract.associatedGravesCount({from: sender});
@@ -36,8 +25,8 @@ contract("GraveFactory: operations", accounts => {
         });
     });
 
-    async function createFactory(count, graveInheritor, factoryOwner) {
-        const factory = await GraveFactoryContract.new({from: factoryOwner});
+    async function createFactory(count, graveInheritor) {
+        const factory = await GraveFactoryContract.new();
         await addGraves(factory, count, graveInheritor);
         return factory;
     }
@@ -51,10 +40,9 @@ contract("GraveFactory: operations", accounts => {
     describe("varing limits", () => {
         let factory;
         const inheritor = accounts[1];
-        const factoryOwner = accounts[0];
 
         beforeEach(async () => {
-            factory = await createFactory(20, inheritor, factoryOwner);
+            factory = await createFactory(20, inheritor);
         });
 
         it("returns 10 results when limit request is 10", async() => {
@@ -76,10 +64,9 @@ contract("GraveFactory: operations", accounts => {
     describe("varing offset", () => {
         let factory;
         const inheritor = accounts[1];
-        const factoryOwner = accounts[0];
 
         beforeEach(async () => {
-            factory = await createFactory(10, inheritor, factoryOwner);
+            factory = await createFactory(10, inheritor);
         });
 
         it("contains appropriate property: low boundary", async() => {

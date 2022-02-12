@@ -1,5 +1,5 @@
 const GraveFactoryContract = artifacts.require("GraveFactory");
 
-module.exports = function (deployer, network, accounts) {
-  deployer.deploy(GraveFactoryContract, {from: accounts[0]});
+module.exports = function (deployer) {
+  deployer.deploy(GraveFactoryContract);
 };
