@@ -47,12 +47,11 @@ export default {
       'nuxt-i18n',
       {
         locales: [
-          { code: 'ja', iso: 'ja_JP' },
+          { code: 'ja', iso: 'ja' },
           { code: 'en', iso: 'en-US' },
         ],
         detectBrowserLanguage: {
-          useCookie: true,
-          alwaysRedirect: true
+          useCookie: false
         },
         defaultLocale: 'ja',
         vueI18n: {
