@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - web3',
-    title: 'web3',
+    titleTemplate: '%s - GraveCemetery',
+    title: 'GraveCemetery',
     htmlAttrs: {
       lang: 'en'
     },
