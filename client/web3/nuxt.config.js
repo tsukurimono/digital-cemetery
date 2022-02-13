@@ -43,13 +43,30 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      'nuxt-i18n',
+      {
+        locales: [
+          { code: 'ja', iso: 'ja_JP' },
+          { code: 'en', iso: 'en-US' },
+        ],
+        detectBrowserLanguage: {
+          useCookie: false
+        },
+        defaultLocale: 'ja',
+        vueI18n: {
+          fallbackLocale: 'ja',
+        },
+        vueI18nLoader: true
+      }
+    ]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -59,6 +76,15 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
+        },
+        light: {
+          primary: "#ff0000",
+          secondary: colors.green,
+          accent: colors.red.darken3,
+          error: colors.red,
+          warning: colors.yellow,
+          info: colors.grey,
+          success: "#795548",
         }
       }
     }
