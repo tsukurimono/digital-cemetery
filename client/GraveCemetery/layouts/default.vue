@@ -3,15 +3,15 @@
   "ja": {
     "title": "デジタル墓地",
     "menu": {
-      "top": "トップページ",
-      "inspire": "インスパイア"
+      "list": "ご縁のあるお墓",
+      "create": "新しく作る"
     }
   },
   "en": {
     "title": "DigitalCemetery",
     "menu": {
-      "top": "Toppage",
-      "inspire": "Inspire"
+      "list": "Toppage",
+      "create": "Create"
     }
   }
 }
@@ -30,15 +30,15 @@
             <v-icon>mdi-apps</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('menu.top')" />
+            <v-list-item-title v-text="$t('menu.list')" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link exact :to="localePath({name: 'inspire'})" nuxt>
+        <v-list-item link exact :to="localePath({name: 'grave-create'})" nuxt>
           <v-list-item-action>
             <v-icon>mdi-chart-bubble</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="$t('menu.inspire')" />
+            <v-list-item-title v-text="$t('menu.create')" />
           </v-list-item-content>
         </v-list-item>
       </v-list>

@@ -3,9 +3,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
-import Web3 from "web3";
 
-import GraveFactoryContract from "../contracts/GraveFactory.json";
 import { Web3Gateway } from "../gateway/Web3Gateway";
 import { DefaultWeb3Gateway } from "../gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
 
