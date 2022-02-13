@@ -53,7 +53,7 @@
       >
         <v-icon>mdi-{{ `chevron-${isMiniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title v-text="$t('title')" />
     </v-app-bar>
     <v-main>
       <v-container>

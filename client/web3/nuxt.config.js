@@ -51,7 +51,8 @@ export default {
           { code: 'en', iso: 'en-US' },
         ],
         detectBrowserLanguage: {
-          useCookie: false
+          useCookie: true,
+          alwaysRedirect: true
         },
         defaultLocale: 'ja',
         vueI18n: {
