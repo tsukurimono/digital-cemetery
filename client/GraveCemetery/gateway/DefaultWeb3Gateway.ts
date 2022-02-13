@@ -1,6 +1,7 @@
 import { Web3Gateway, Grave } from '@/gateway/Web3Gateway'
 import Web3 from "web3";
 import GraveFactoryContract from "../contracts/GraveFactory.json";
+import GraveContract from "../contracts/Grave.json";
 
 declare global {
     interface Window {
@@ -14,8 +15,8 @@ declare global {
     interface GraveFactoryContract {
         methods: {
             associatedGravesCount(): {call():Promise<number>}
-            createGrave(name:string, birth:number, death:number, portraitURL:string): void
-            associatedGraves(limit:number, offset:number): {call():Promise<GraveContract[]>}
+            createGrave(name:string, birth:number, death:number, portraitURL:string): {send(param:any):Promise<void>}
+            associatedGraves(limit:number, offset:number): {call(param:any):Promise<string[]>}
             associateGrave(address:string): void
         }
     }
@@ -42,6 +43,7 @@ export class DefaultWeb3Gateway implements Web3Gateway {
     public static async build(): Promise<DefaultWeb3Gateway> {
        const gateway = new DefaultWeb3Gateway();
        gateway.web3 = new Web3(window.ethereum);
+       //gateway.web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.3.7:8545'));
        await window.ethereum.enable();
        gateway.accounts = await gateway.web3.eth.getAccounts();
        const networkID = await gateway.web3.eth.net.getId();
@@ -53,22 +55,34 @@ export class DefaultWeb3Gateway implements Web3Gateway {
     }
 
     public async getGraves(limit:number, offset:number): Promise<Grave[]> {
-        const graveContracts = await this.graveFactoryContract.methods.associatedGraves(limit, offset).call();
-        const grave:Grave[] = []
+        const graveContracts = await this.graveFactoryContract.methods.associatedGraves(limit, offset).call({from: this.accounts[0]});
+        const graves:Grave[] = []
 
         graveContracts.forEach(async(element) => {
-            grave.push(new Grave(
-                element._address,
-                await element.methods.name().call(), 
-                await element.methods.portraitURL().call(),
-                await element.methods.birth().call(),
-                await element.methods.death().call()
+            const contractObject:ContractObject = GraveContract;
+            console.log(element);
+            const grave = new this.web3.eth.Contract(contractObject.abi, element);
+            graves.push(new Grave(
+                grave.options.address,
+                await grave.methods.name().call(), 
+                await grave.methods.portraitURL().call(),
+                await grave.methods.birth().call(),
+                await grave.methods.death().call()
                 ))
         });
-        return grave;
+        return graves;
     }
 
     public async getGraveCount(): Promise<number> {
         return await this.graveFactoryContract.methods.associatedGravesCount().call();
+    }
+
+    public async createGrave(name:string, birth:number, death:number, portraitURL:string): Promise<void> {
+        await this.graveFactoryContract.methods.createGrave(
+            name, 
+            birth, 
+            death, 
+            portraitURL
+            ).send({from: this.accounts[0]});
     }
 }

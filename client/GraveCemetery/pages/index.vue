@@ -4,8 +4,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 
-import { Web3Gateway } from "../gateway/Web3Gateway";
-import { DefaultWeb3Gateway } from "../gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
+import { Web3Gateway } from "@/gateway/Web3Gateway";
+import { DefaultWeb3Gateway } from "@/gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
 
 @Component({
   components: {}
