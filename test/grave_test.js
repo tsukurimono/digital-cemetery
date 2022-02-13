@@ -40,6 +40,11 @@ contract("Grave", accounts => {
             assert.equal(actual, inheritor, "owner should match");
         });
 
+        it("successor", async() => {
+            const actual = await grave.successor();
+            assert.equal(actual, inheritor, "successor should be same as owner");
+        });
+
         it("emits the Created event", async() => {
             const txHash = grave.transactionHash;
             const txResult = await truffleAssert.createTransactionResult(grave, txHash);
@@ -79,22 +84,23 @@ contract("Grave", accounts => {
         });
     });
 
-    describe("inherit", async() => {
-        const newInheritor = accounts[2];
+    describe("nominate", async() => {
+        const successor = accounts[2];
 
-        it("inherit when called by inheritor account", async() => {
+        it("nominate when called by inheritor", async() => {
             try {
-                await grave.inherit(newInheritor, {from: inheritor});
-                const actual = await grave.owner();
-                assert.equal(actual, newInheritor, "inheritor should match");
+                await grave.nominate(successor, {from: inheritor});
+                assert.equal(await grave.owner(), inheritor, "inheritor shouldn't be changed");
+
+                assert.equal(await grave.successor(), successor, "successor should match");
             } catch(err) {
                 assert.fail("error shouldn't occur");
             }
         });
 
-        it("throws an error when called from non-inheritor account", async() => {
+        it("throws an error when called from non-inheritor", async() => {
             try {
-                await grave.inherit(newInheritor, {from: accounts[1]});
+                await grave.nominate(successor, {from: accounts[1]});
                 assert.fail("not restricted by inheritor");
             } catch(err) {
                 const expectedError = "Ownable: caller is not the owner";
@@ -103,16 +109,12 @@ contract("Grave", accounts => {
             }
         });
 
-        it("emits Inherited event", async() => {
-            const tx = await grave.inherit(newInheritor, {from: inheritor});
+        it("emits Nominate event", async() => {
+            const tx = await grave.nominate(successor, {from: inheritor});
 
-            const expectedEvent0 = "OwnershipTransferred";
-            const actualEvent0 = tx.logs[0].event;
-            assert.equal(actualEvent0, expectedEvent0, "events should match");
-
-            const expectedEvent1 = "Inherited";
-            const actualEvent1 = tx.logs[1].event;
-            assert.equal(actualEvent1, expectedEvent1, "events should match");
+            const expectedEvent = "Nominated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
         });
     });
 });
