@@ -35,14 +35,14 @@ contract("Grave", accounts => {
             assert.equal(actual, portraitURL, "portraitURL should match");
         });
 
-        it("owner(inheritor)", async() => {
-            const actual = await grave.owner();
-            assert.equal(actual, inheritor, "owner should match");
+        it("inheritor", async() => {
+            const actual = await grave.inheritor();
+            assert.equal(actual, inheritor, "inheritor should match");
         });
 
         it("successor", async() => {
             const actual = await grave.successor();
-            assert.equal(actual, inheritor, "successor should be same as owner");
+            assert.equal(actual, inheritor, "successor should be same as inheritor");
         });
 
         it("emits the Created event", async() => {
@@ -70,7 +70,7 @@ contract("Grave", accounts => {
                 await grave.setPortraitURL(newPortraitURL, {from: accounts[1]});
                 assert.fail("not restricted by inheritor");
             } catch(err) {
-                const expectedError = "Ownable: caller is not the owner";
+                const expectedError = "Grave: caller is not the inheritor";
                 const actualError = err.reason;
                 assert.equal(actualError, expectedError, "should not be permitted");
             }
@@ -90,7 +90,7 @@ contract("Grave", accounts => {
         it("nominate when called by inheritor", async() => {
             try {
                 await grave.nominate(successor, {from: inheritor});
-                assert.equal(await grave.owner(), inheritor, "inheritor shouldn't be changed");
+                assert.equal(await grave.inheritor(), inheritor, "inheritor shouldn't be changed");
 
                 assert.equal(await grave.successor(), successor, "successor should match");
             } catch(err) {
@@ -103,7 +103,7 @@ contract("Grave", accounts => {
                 await grave.nominate(successor, {from: accounts[1]});
                 assert.fail("not restricted by inheritor");
             } catch(err) {
-                const expectedError = "Ownable: caller is not the owner";
+                const expectedError = "Grave: caller is not the inheritor";
                 const actualError = err.reason;
                 assert.equal(actualError, expectedError, "should not be permitted");
             }
@@ -113,6 +113,42 @@ contract("Grave", accounts => {
             const tx = await grave.nominate(successor, {from: inheritor});
 
             const expectedEvent = "Nominated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
+    });
+
+    describe("inherit", async() => {
+        const successor = accounts[2];
+
+        it("inherit when called by successor", async() => {
+            try {
+                await grave.nominate(successor, {from: inheritor});
+                await grave.inherit({from: successor});
+
+                assert.equal(await grave.inheritor(), successor, "inheritor should match");
+            } catch(err) {
+                assert.fail("error shouldn't occur");
+            }
+        });
+
+        it("throws an error when called from non-successor", async() => {
+            try {
+                await grave.nominate(successor, {from: inheritor});
+                await grave.inherit({from: accounts[3]});
+                assert.fail("not restricted by successor");
+            } catch(err) {
+                const expectedError = "Grave: caller is not the successor";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+
+        it("emits Inherited event", async() => {
+            await grave.nominate(successor, {from: inheritor});
+            const tx = await grave.inherit({from: successor});
+
+            const expectedEvent = "Inherited";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
         });
