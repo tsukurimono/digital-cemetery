@@ -6,34 +6,19 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import Web3 from "web3";
 
 import GraveFactoryContract from "../contracts/GraveFactory.json";
-
-declare global {
-    interface Window {
-        ethereum:any;
-    }
-
-    interface ContractObject {
-      networks:{[key:number]:any};
-      abi:any[];
-    }
-}
+import { Web3Gateway } from "../gateway/Web3Gateway";
+import { DefaultWeb3Gateway } from "../gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
 
 @Component({
   components: {}
 })
 
 export default class Index extends Vue {
-  private web3:Web3|null = null
+  private web3Gateway!:Web3Gateway
 
   async mounted() {
-    this.web3 = new Web3(window.ethereum);
-    await window.ethereum.enable();
-    const accounts = await this.web3.eth.getAccounts();
-    const networkId = await this.web3.eth.net.getId();
-    const object:ContractObject = GraveFactoryContract;
-    const deployedNetwork = object.networks[networkId];
-    const instance = new this.web3.eth.Contract(object.abi, deployedNetwork.address);
-    console.log(instance);
+    this.web3Gateway = await DefaultWeb3Gateway.build();
+    console.log(await this.web3Gateway.getGraves(10,0));
   }
 }
 </script>
