@@ -8,7 +8,7 @@
               label="Name"
               placeholder="Name"
               :counter="256"
-              :value="nameTextField"
+              v-model="nameTextField"
               outlined
               dense
             ></v-text-field>
@@ -20,7 +20,7 @@
               label="Birth"
               placeholder="Birth"
               :counter="256"
-              :value="birthTextField"
+              v-model="birthTextField"
               outlined
               dense
             ></v-text-field>
@@ -32,7 +32,7 @@
               label="Death"
               placeholder="Death"
               :counter="256"
-              :value="deathTextField"
+              v-model="deathTextField"
               outlined
               dense
             ></v-text-field>
@@ -44,7 +44,7 @@
               label="PortraitURL"
               placeholder="PortraitURL"
               :counter="256"
-              :value="portraitURLTextField"
+              v-model="portraitURLTextField"
               outlined
               dense
             ></v-text-field>
@@ -82,6 +82,7 @@ export default class GraveCreate extends Vue {
   }
 
   createButtonClicked() {
+    console.log(this.nameTextField);
     this.web3Gateway.createGrave( 
       this.nameTextField, 
       Number(this.birthTextField), 
