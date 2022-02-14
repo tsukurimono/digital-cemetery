@@ -22,7 +22,6 @@ declare global {
     }
 
     interface GraveContract {
-        _address:string,
         methods:{
             name(): {call():Promise<string>}
             birth(): {call():Promise<number>}

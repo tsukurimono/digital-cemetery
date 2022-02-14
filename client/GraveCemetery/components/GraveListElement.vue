@@ -7,21 +7,33 @@
         ></v-img>
 
         <v-card-title>
-          Top western road trips
+          {{ name }}
         </v-card-title>
 
-        <v-card-text>
-          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
-        </v-card-text>
+        <v-card-text> Birth: {{ birth }} </v-card-text>
+        <v-card-text> Dead: {{ dead }} </v-card-text>
+        <v-card-text> URL: {{ portraitURL }} </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator';
+import { Component, Vue, Prop } from 'nuxt-property-decorator';
 
 @Component
 export default class GraveListElement extends Vue {
   private defaultThumbnail = require('@/assets/default-portrait.png')
+
+  @Prop()
+  name:string = "No Name"
+
+  @Prop()
+  birth:number = 0
+
+  @Prop()
+  dead:number = 0
+
+  @Prop()
+  portraitURL:string = "https://<portrait-url>"
 
   async mounted() {
   }
