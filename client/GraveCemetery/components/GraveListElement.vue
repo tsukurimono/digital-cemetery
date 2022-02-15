@@ -10,8 +10,8 @@
           {{ name }}
         </v-card-title>
 
-        <v-card-text> Birth: {{ birth }} </v-card-text>
-        <v-card-text> Dead: {{ death }} </v-card-text>
+        <v-card-text> Birth: {{ (new Date(birth)).toISOString() }} </v-card-text>
+        <v-card-text> Dead: {{ (new Date(death)).toISOString() }} </v-card-text>
         <v-card-text> URL: {{ portraitURL }} </v-card-text>
   </v-card>
 </template>

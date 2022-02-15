@@ -16,26 +16,12 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-text-field
-              label="Birth"
-              placeholder="Birth"
-              :counter="256"
-              v-model="birthTextField"
-              outlined
-              dense
-            ></v-text-field>
+            <date-picker-element min="1900-01-01" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-text-field
-              label="Death"
-              placeholder="Death"
-              :counter="256"
-              v-model="deathTextField"
-              outlined
-              dense
-            ></v-text-field>
+            <date-picker-element min="1900-01-01" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
@@ -66,8 +52,12 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator';
 import { Web3Gateway, Grave } from "@/gateway/Web3Gateway";
 import { DefaultWeb3Gateway } from "@/gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
 
+import DatePickerElement from '@/components/DatePickerElement.vue';
+
 @Component({
-  components: {}
+  components: {
+    DatePickerElement
+  }
 })
 
 export default class GraveCreate extends Vue {
@@ -82,11 +72,10 @@ export default class GraveCreate extends Vue {
   }
 
   createButtonClicked() {
-    console.log(this.nameTextField);
     this.web3Gateway.createGrave( 
       this.nameTextField, 
-      Number(this.birthTextField), 
-      Number(this.deathTextField),
+      Number(Date.parse(this.birthTextField)/1000),
+      Number(Date.parse(this.deathTextField)/1000),
       this.portraitURLTextField
       )
   }
