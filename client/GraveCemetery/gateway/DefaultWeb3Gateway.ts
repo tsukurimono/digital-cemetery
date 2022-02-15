@@ -42,13 +42,11 @@ export class DefaultWeb3Gateway implements Web3Gateway {
     public static async build(): Promise<DefaultWeb3Gateway> {
        const gateway = new DefaultWeb3Gateway();
        gateway.web3 = new Web3(window.ethereum);
-       //gateway.web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.3.7:8545'));
        await window.ethereum.enable();
        gateway.accounts = await gateway.web3.eth.getAccounts();
        const networkID = await gateway.web3.eth.net.getId();
        const contractObject:ContractObject = GraveFactoryContract;
        gateway.graveFactoryContract = new gateway.web3.eth.Contract(contractObject.abi, contractObject.networks[networkID].address);
-       console.log(gateway.graveFactoryContract);
 
        return gateway;
     }

@@ -4,6 +4,8 @@ pragma solidity >=0.4.22 <0.9.0;
 import "./Grave.sol";
 
 contract GraveFactory {
+    event CreatedGrave(Grave indexed grave, address indexed inheritor);
+
     mapping(address => Grave[]) private _graves;
     uint256 constant maxLimit = 20;
 
@@ -16,6 +18,7 @@ contract GraveFactory {
     function createGrave(string memory name, int256 birth, int256 death, string memory portraitURL) public {
         Grave grave = new Grave(name, birth, death, portraitURL, msg.sender);
         _graves[msg.sender].push(grave);
+        emit CreatedGrave(grave, msg.sender);
     }
 
     function associatedGraves(uint256 limit, uint256 offset) public view returns(Grave[] memory coll) {

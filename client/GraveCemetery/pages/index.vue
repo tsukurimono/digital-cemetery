@@ -6,7 +6,7 @@
           <grave-list-element 
             :name="item.name"
             :birth="item.birth"
-            :dead="item.dead"
+            :death="item.death"
             :portraitURL="item.portraitURL"
           />
         </v-col>
@@ -42,9 +42,6 @@ export default class Index extends Vue {
 
   async loadGraves() {
     this.graves = await this.web3Gateway.getGraves(this.PER_PAGE, this.pageIndex * this.PER_PAGE);
-    console.log("hogehogehogehogehoge");
-    console.log(await (await this.graves[0]).name);
-    console.log("hogehogehogehogehoge");
   }
 
   @Watch('pageIndex')

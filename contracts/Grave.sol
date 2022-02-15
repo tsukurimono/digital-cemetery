@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 contract Grave {
-    event Created(address indexed inheritor);
+    event Created(Grave indexed grave, address indexed inheritor);
     event PortraitUpdated(address indexed inheritor);
     event Inherited(address indexed inheritor);
     event Nominated(address indexed inheritor, address indexed successor);
@@ -31,7 +31,7 @@ contract Grave {
         portraitURL = _portraitURL;
         successor = _inheritor;
         inheritor = _inheritor;
-        emit Created(_inheritor);
+        emit Created(this, _inheritor);
     }
 
     function setPortraitURL(string memory _portraitURL) public onlyInheritor {
