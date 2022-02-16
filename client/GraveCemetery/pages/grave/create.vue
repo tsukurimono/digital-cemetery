@@ -53,6 +53,7 @@ import { Web3Gateway, Grave } from "@/gateway/Web3Gateway";
 import { DefaultWeb3Gateway } from "@/gateway/DefaultWeb3Gateway"; // TODO: Use Injection function.
 
 import DatePickerElement from '@/components/DatePickerElement.vue';
+import { DateTime } from "luxon";
 
 @Component({
   components: {
@@ -74,8 +75,8 @@ export default class GraveCreate extends Vue {
   createButtonClicked() {
     this.web3Gateway.createGrave( 
       this.nameTextField, 
-      Number(Date.parse(this.birthTextField)/1000),
-      Number(Date.parse(this.deathTextField)/1000),
+      DateTime.fromSQL(this.birthTextField, {zone: "utc"}).toLocal().toSeconds(),
+      DateTime.fromSQL(this.deathTextField, {zone: "utc"}).toLocal().toSeconds(),
       this.portraitURLTextField
       )
   }

@@ -1,3 +1,14 @@
+<i18n>
+{
+  "ja": {
+    "aged": "享年"
+  },
+  "en": {
+    "aged": "aged"
+  }
+}
+</i18n>
+
 <template>
     <v-card>
         <v-img
@@ -10,14 +21,13 @@
           {{ name }}
         </v-card-title>
 
-        <v-card-text> Birth: {{ (new Date(birth)).toISOString() }} </v-card-text>
-        <v-card-text> Dead: {{ (new Date(death)).toISOString() }} </v-card-text>
-        <v-card-text> URL: {{ portraitURL }} </v-card-text>
+        <v-card-text> <code>{{ birthISOString }}</code> - <code>{{ deathISOString }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'nuxt-property-decorator';
+import { DateTime } from "luxon";
 
 @Component
 export default class GraveListElement extends Vue {
@@ -35,7 +45,17 @@ export default class GraveListElement extends Vue {
   @Prop({default: "https://<portrait-url>"})
   portraitURL!:string
 
-  async mounted() {
+  get birthISOString() {
+    return DateTime.fromSeconds( this.birth ).toUTC().toISODate();
+  }
+
+  get deathISOString() {
+    return DateTime.fromSeconds( this.death ).toUTC().toISODate();
+  }
+
+  get age() {
+    const duration = DateTime.fromSeconds( this.death ).diff(DateTime.fromSeconds( this.birth ), ['year', 'month', 'day']);
+    return duration.years;
   }
 }
 </script>

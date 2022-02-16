@@ -5,12 +5,12 @@ export class Grave {
     birth: number
     death: number
 
-    constructor(address:string, name:string, portraitURL:string, birth:number, death:number) {
+    constructor(address:string, name:string, birth:number, death:number, portraitURL:string) {
         this.addrss = address;
         this.name = name;
-        this.portraitURL = portraitURL;
         this.birth = birth;
         this.death = death;
+        this.portraitURL = portraitURL;
     }
 }
 

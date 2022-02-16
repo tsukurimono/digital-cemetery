@@ -62,9 +62,9 @@ export class DefaultWeb3Gateway implements Web3Gateway {
             graves.push(new Grave(
                 grave.options.address,
                 await grave.methods.name().call(), 
-                await grave.methods.portraitURL().call(),
-                await grave.methods.birth().call(),
-                await grave.methods.death().call()
+                Number(await grave.methods.birth().call()),
+                Number(await grave.methods.death().call()),
+                await grave.methods.portraitURL().call()
                 ))
         });
         return graves;
