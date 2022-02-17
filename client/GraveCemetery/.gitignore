@@ -35,7 +35,7 @@ bower_components
 build/Release
 
 # Contracts json
-contracts/
+#contracts/
 
 # Dependency directories
 node_modules/

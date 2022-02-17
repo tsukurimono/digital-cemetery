@@ -18,7 +18,7 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -47,6 +47,16 @@ module.exports = {
       host: "192.168.3.7",   // Localhost (default: none)
       port: 8545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
+    },
+    goerli: {
+      provider: () => {
+        const mnemonic = process.env["MNEMONIC"]
+        const project_id = process.env["INFURA_PROJECT_ID"]
+        return new HDWalletProvider(
+          mnemonic, `https://goerli.infura.io/v3/${project_id}`
+        );
+      },
+      network_id: "*"
     },
     // Another network with more advanced options...
     // advanced: {
