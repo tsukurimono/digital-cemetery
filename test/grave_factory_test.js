@@ -23,6 +23,14 @@ contract("GraveFactory: operations", accounts => {
             const newAssociatedGravesCount = await graveFactoryContract.associatedGravesCount({from: sender});
             assert.equal(newAssociatedGravesCount - currentAssociatedGravesCount, 1, "should increment by 1")
         });
+
+        it("emits the GraveCreated event", async() => {
+            const graveFactoryContract = await GraveFactoryContract.new();
+            const tx = await graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
+            const expectedEvent = "GraveCreated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
     });
 
     async function createFactory(count, graveInheritor) {
