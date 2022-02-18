@@ -26,7 +26,7 @@ contract("GraveFactory: operations", accounts => {
 
         it("emits the GraveCreated event", async() => {
             const graveFactoryContract = await GraveFactoryContract.new();
-            const tx = graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
+            const tx = await graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
             const expectedEvent = "GraveCreated";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
