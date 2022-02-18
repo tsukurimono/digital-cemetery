@@ -131,4 +131,67 @@ contract("GraveFactory: operations", accounts => {
             assert.equal(0, newAssociatedGravesCount - currentAssociatedGravesCount, "should be same");
         });
     });
+
+    describe("unassociateGrave", () => {
+        let factory;
+        const totalCount = 10;
+        const inheritor = accounts[1];
+        const otherAccount = accounts[2];
+
+        beforeEach(async () => {
+            factory = await createFactory(totalCount, inheritor);
+        });
+
+        it("associated graves count should decrement by 1", async () => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            await factory.unassociateGrave(graves[0], {from: inheritor});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            assert.equal(1, currentAssociatedGravesCount - newAssociatedGravesCount, "should decrement by 1");
+        });
+
+        it("other graves keep their order", async () => {
+            const removeIndex = 3;
+            const associatedGraves = await factory.associatedGraves(totalCount, 0, {from: inheritor});
+            await factory.unassociateGrave(associatedGraves[removeIndex], {from: inheritor});
+            const expected = associatedGraves.filter(val => val != associatedGraves[removeIndex]);
+            const actual = await factory.associatedGraves(totalCount, 0, {from: inheritor});
+
+            assert.equal(actual.length, expected.length, "element count should be equal");
+            for(let i=0; i<expected.length; i++) { 
+                assert.equal(actual[i], expected[i], "each element and order should be same");
+            }
+        });
+
+        it("last grave", async () => {
+            const removeIndex = totalCount - 1;
+            const associatedGraves = await factory.associatedGraves(totalCount, 0, {from: inheritor});
+            await factory.unassociateGrave(associatedGraves[removeIndex], {from: inheritor});
+            const expected = associatedGraves.slice(0, -1);
+            const actual = await factory.associatedGraves(totalCount, 0, {from: inheritor});
+
+            assert.equal(actual.length, expected.length, "element count should be equal");
+            for(let i=0; i<expected.length; i++) { 
+                assert.equal(actual[i], expected[i], "each element and order should be same");
+            }
+        });
+
+        it("grave is not associated", async () => {
+            await factory.createGrave(name, birth, death, portraitURL, {from: otherAccount});
+            const notAssocitedGraves = await factory.associatedGraves(totalCount, 0, {from: otherAccount});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            await factory.unassociateGrave(notAssocitedGraves[0], {from: inheritor});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            assert.equal(0, newAssociatedGravesCount - currentAssociatedGravesCount, "should be same");
+        });
+
+        it("other association still remain", async () => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            await factory.associateGrave(graves[0], {from: otherAccount});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: otherAccount});
+            await factory.unassociateGrave(graves[0], {from: inheritor});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: otherAccount});
+            assert.equal(0, newAssociatedGravesCount - currentAssociatedGravesCount, "should be same");
+        });
+    });
 });
