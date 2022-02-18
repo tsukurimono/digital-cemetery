@@ -41,6 +41,11 @@ contract("Grave", accounts => {
             assert.equal(actual, epigraph, "epigraph should match");
         });
 
+        it("prayed", async() => {
+            const actual = await grave.prayed();
+            assert.equal(actual, 0, "prayed should be zero");
+        });
+
         it("inheritor", async() => {
             const actual = await grave.inheritor();
             assert.equal(actual, inheritor, "inheritor should match");
@@ -187,6 +192,29 @@ contract("Grave", accounts => {
             const tx = await grave.inherit({from: successor});
 
             const expectedEvent = "Inherited";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
+    });
+
+    describe("pray", async() => {
+        it("pray by inheritor", async() => {
+            const currentPrayed = await grave.prayed();
+            await grave.pray({from: inheritor});
+            const newPrayed = await grave.prayed();
+            assert.equal(1, newPrayed - currentPrayed, "should be incremented by 1");
+        });
+
+        it("pray by others", async() => {
+            const currentPrayed = await grave.prayed();
+            await grave.pray({from: accounts[2]});
+            const newPrayed = await grave.prayed();
+            assert.equal(1, newPrayed - currentPrayed, "should be incremented by 1");
+        });
+
+        it("emits Prayed event", async() => {
+            const tx = await grave.pray({from: inheritor});
+            const expectedEvent = "Prayed";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
         });
