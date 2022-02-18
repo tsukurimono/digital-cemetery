@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.9.0;
 
 contract Grave {
     event Created(Grave indexed grave, address indexed inheritor);
+    event Prayed(address indexed prayer);
     event PortraitUpdated(address indexed inheritor);
     event EpigraphUpdated(address indexed inheritor);
     event Inherited(address indexed inheritor);
@@ -23,6 +24,7 @@ contract Grave {
     int256 public death;
     string public portraitURL;
     string public epigraph;
+    uint256 public prayed;
     address public inheritor;
     address public successor;
 
@@ -34,6 +36,7 @@ contract Grave {
         epigraph = _epigraph;
         successor = _inheritor;
         inheritor = _inheritor;
+        prayed = 0;
         emit Created(this, _inheritor);
     }
 
@@ -55,5 +58,10 @@ contract Grave {
     function nominate(address _successor) public onlyInheritor {
         successor = _successor;
         emit Nominated(msg.sender, successor);
+    }
+
+    function pray() public {
+        prayed++;
+        emit Prayed(msg.sender);
     }
 }
