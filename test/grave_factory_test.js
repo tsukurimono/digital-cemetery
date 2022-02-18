@@ -13,20 +13,21 @@ contract("GraveFactory: operations", accounts => {
     const birth = -1518825600;
     const death = 1639958400;
     const portraitURL = "https://digital-graves/boo/bar"
+    const epigraph = "epigraph"
     const sender = accounts[1];
 
     describe("creation", () => {
         it("associated graves count should increment by 1", async() => {
             const graveFactoryContract = await GraveFactoryContract.new();
             const currentAssociatedGravesCount = await graveFactoryContract.associatedGravesCount({from: sender});
-            await graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
+            await graveFactoryContract.createGrave(name, birth, death, portraitURL, epigraph, {from: sender});
             const newAssociatedGravesCount = await graveFactoryContract.associatedGravesCount({from: sender});
             assert.equal(newAssociatedGravesCount - currentAssociatedGravesCount, 1, "should increment by 1")
         });
 
         it("emits the GraveCreated event", async() => {
             const graveFactoryContract = await GraveFactoryContract.new();
-            const tx = await graveFactoryContract.createGrave(name, birth, death, portraitURL, {from: sender});
+            const tx = await graveFactoryContract.createGrave(name, birth, death, portraitURL, epigraph, {from: sender});
             const expectedEvent = "GraveCreated";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
@@ -41,7 +42,7 @@ contract("GraveFactory: operations", accounts => {
 
     async function addGraves(factory, count, graveInheritor) {
         for(let i=0; i<count; i++) {
-            await factory.createGrave(`${name} ${i}`, birth, death, `${portraitURL}/${i}`, {from: graveInheritor});
+            await factory.createGrave(`${name} ${i}`, birth, death, `${portraitURL}/${i}`, `${epigraph} ${i}`, {from: graveInheritor});
         }
     }
 
@@ -177,7 +178,7 @@ contract("GraveFactory: operations", accounts => {
         });
 
         it("grave is not associated", async () => {
-            await factory.createGrave(name, birth, death, portraitURL, {from: otherAccount});
+            await factory.createGrave(name, birth, death, portraitURL, epigraph, {from: otherAccount});
             const notAssocitedGraves = await factory.associatedGraves(totalCount, 0, {from: otherAccount});
             const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
             await factory.unassociateGrave(notAssocitedGraves[0], {from: inheritor});

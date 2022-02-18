@@ -15,8 +15,8 @@ contract GraveFactory {
         return _graves[msg.sender].length;
     }
 
-    function createGrave(string memory name, int256 birth, int256 death, string memory portraitURL) public {
-        Grave grave = new Grave(name, birth, death, portraitURL, msg.sender);
+    function createGrave(string memory name, int256 birth, int256 death, string memory portraitURL, string memory epigraph) public {
+        Grave grave = new Grave(name, birth, death, portraitURL, epigraph, msg.sender);
         _graves[msg.sender].push(grave);
         emit GraveCreated(grave, msg.sender);
     }

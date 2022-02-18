@@ -8,10 +8,11 @@ contract("Grave", accounts => {
     const birth = -1518825600;
     const death = 1639958400;
     const portraitURL = "https://digital-graves/boo/bar"
+    const epigraph = "epigraph"
     const inheritor = accounts[0];
 
     beforeEach(async() => {
-        grave = await GraveContract.new(name, birth, death, portraitURL, inheritor);
+        grave = await GraveContract.new(name, birth, death, portraitURL, epigraph, inheritor);
     });
 
     describe("initialization", () => {
@@ -33,6 +34,11 @@ contract("Grave", accounts => {
         it("portraitURL", async() => {
             const actual = await grave.portraitURL();
             assert.equal(actual, portraitURL, "portraitURL should match");
+        });
+
+        it("epigraph", async() => {
+            const actual = await grave.epigraph();
+            assert.equal(actual, epigraph, "epigraph should match");
         });
 
         it("inheritor", async() => {
@@ -79,6 +85,38 @@ contract("Grave", accounts => {
         it("emits PortraitUpdated event", async() => {
             const tx = await grave.setPortraitURL(newPortraitURL, {from: inheritor});
             const expectedEvent = "PortraitUpdated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
+    });
+
+    describe("set epigraph", async() => {
+        const newEpigraph = "new epigraph";
+
+        it("updated epigraph when called by inheritor account", async() => {
+            try {
+                await grave.setEpigraph(newEpigraph, {from: inheritor});
+                const actual = await grave.epigraph();
+                assert.equal(actual, newEpigraph, "epigraph should match");
+            } catch(err) {
+                assert.fail("error shouldn't occur");
+            }
+        });
+
+        it("throws an error when called from non-inheritor account", async() => {
+            try {
+                await grave.setEpigraph(newEpigraph, {from: accounts[1]});
+                assert.fail("not restricted by inheritor");
+            } catch(err) {
+                const expectedError = "Grave: caller is not the inheritor";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+
+        it("emits EpigraphUpdated event", async() => {
+            const tx = await grave.setEpigraph(newEpigraph, {from: inheritor});
+            const expectedEvent = "EpigraphUpdated";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
         });
