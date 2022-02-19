@@ -26,7 +26,7 @@
             </v-card-title>
 
             <v-card-text> <code>{{ graveBirth }}</code> - <code>{{ graveDeath }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
-            <v-card-text> {{ graveEpigraph }} </v-card-text>
+            <v-card-text style="white-space: pre-line; word-wrap:break-word;"> {{ graveEpigraph }} </v-card-text>
             <v-row><v-spacer/><v-col cols="1"><v-icon @click="clickButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} </v-col></v-row>
           </v-card>
         </v-col>

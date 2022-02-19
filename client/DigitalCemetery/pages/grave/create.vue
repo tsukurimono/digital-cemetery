@@ -38,14 +38,13 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-text-field
+            <v-textarea
               label="Epigraph"
               placeholder="Epigraph"
-              :counter="256"
-              v-model="epigraphTextField"
+              v-model="epigraphTextarea"
               outlined
               dense
-            ></v-text-field>
+            ></v-textarea>
           </v-col>
         </v-row>
         <v-row>
@@ -79,7 +78,7 @@ export default class GraveCreate extends Vue {
   private birthTextField:string = ""
   private deathTextField:string = ""
   private portraitURLTextField:string = ""
-  private epigraphTextField:string = ""
+  private epigraphTextarea:string = ""
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
@@ -91,7 +90,7 @@ export default class GraveCreate extends Vue {
       DateTime.fromSQL(this.birthTextField, {zone: "utc"}).toLocal().toSeconds(),
       DateTime.fromSQL(this.deathTextField, {zone: "utc"}).toLocal().toSeconds(),
       this.portraitURLTextField,
-      this.epigraphTextField
+      this.epigraphTextarea
       )
   }
 }
