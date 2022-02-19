@@ -15,7 +15,7 @@ declare global {
     interface GraveFactoryContract {
         methods: {
             associatedGravesCount(): {call():Promise<number>}
-            createGrave(name:string, birth:number, death:number, portraitURL:string): {send(param:any):Promise<void>}
+            createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
             associatedGraves(limit:number, offset:number): {call(param:any):Promise<string[]>}
             associateGrave(address:string): void
         }
@@ -27,6 +27,8 @@ declare global {
             birth(): {call():Promise<number>}
             death(): {call():Promise<number>}
             portraitURL(): {call():Promise<string>}
+            epigraph(): {call():Promise<string>}
+            prayed(): {call():Promise<number>}
         }
     }
 }
@@ -57,15 +59,16 @@ export class DefaultWeb3Gateway implements Web3Gateway {
 
         graveContracts.forEach(async(element) => {
             const contractObject:ContractObject = GraveContract;
-            console.log(element);
             const grave = new this.web3.eth.Contract(contractObject.abi, element);
             graves.push(new Grave(
                 grave.options.address,
                 await grave.methods.name().call(), 
                 Number(await grave.methods.birth().call()),
                 Number(await grave.methods.death().call()),
-                await grave.methods.portraitURL().call()
-                ))
+                await grave.methods.portraitURL().call(),
+                await grave.methods.epigraph().call(),
+                Number(await grave.methods.prayed().call())
+                ));
         });
         return graves;
     }
@@ -74,12 +77,13 @@ export class DefaultWeb3Gateway implements Web3Gateway {
         return await this.graveFactoryContract.methods.associatedGravesCount().call();
     }
 
-    public async createGrave(name:string, birth:number, death:number, portraitURL:string): Promise<void> {
+    public async createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void> {
         await this.graveFactoryContract.methods.createGrave(
             name, 
             birth, 
             death, 
-            portraitURL
+            portraitURL,
+            epigraph
             ).send({from: this.accounts[0]});
     }
 }

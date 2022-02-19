@@ -38,6 +38,18 @@
         </v-row>
         <v-row>
           <v-col cols="12">
+            <v-text-field
+              label="Epigraph"
+              placeholder="Epigraph"
+              :counter="256"
+              v-model="epigraphTextField"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
             <v-btn block color="primary" dark v-on:click="createButtonClicked">Create</v-btn>
           </v-col>
         </v-row>
@@ -67,6 +79,7 @@ export default class GraveCreate extends Vue {
   private birthTextField:string = ""
   private deathTextField:string = ""
   private portraitURLTextField:string = ""
+  private epigraphTextField:string = ""
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
@@ -77,7 +90,8 @@ export default class GraveCreate extends Vue {
       this.nameTextField, 
       DateTime.fromSQL(this.birthTextField, {zone: "utc"}).toLocal().toSeconds(),
       DateTime.fromSQL(this.deathTextField, {zone: "utc"}).toLocal().toSeconds(),
-      this.portraitURLTextField
+      this.portraitURLTextField,
+      this.epigraphTextField
       )
   }
 }
