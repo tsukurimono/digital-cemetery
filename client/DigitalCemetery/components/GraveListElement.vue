@@ -10,18 +10,18 @@
 </i18n>
 
 <template>
-    <v-card>
-        <v-img
-          :src="defaultThumbnail"
-          contain
-          height="200px"
-        ></v-img>
+  <v-card link exact :to="localePath({name: 'grave-id', params: {id: address}})" nuxt>
+    <v-img
+      :src="defaultThumbnail"
+      contain
+      height="200px"
+    ></v-img>
 
-        <v-card-title>
-          {{ name }}
-        </v-card-title>
+    <v-card-title>
+      {{ name }}
+    </v-card-title>
 
-        <v-card-text> <code>{{ birthISOString }}</code> - <code>{{ deathISOString }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
+    <v-card-text> <code>{{ birthISOString }}</code> - <code>{{ deathISOString }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
   </v-card>
 </template>
 
@@ -32,6 +32,9 @@ import { DateTime } from "luxon";
 @Component
 export default class GraveListElement extends Vue {
   private defaultThumbnail = require('@/assets/default-portrait.png')
+
+  @Prop({default: "0x0"})
+  address!:string
 
   @Prop({default: "No Name"})
   name!:string

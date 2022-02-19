@@ -53,6 +53,21 @@ export class DefaultWeb3Gateway implements Web3Gateway {
        return gateway;
     }
 
+    public async getGrave(address:string): Promise<Grave> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+
+        return new Grave(
+            address,
+            await graveContract.methods.name().call(),
+            Number(await graveContract.methods.birth().call()),
+            Number(await graveContract.methods.death().call()),
+            await graveContract.methods.portraitURL().call(),
+            await graveContract.methods.epigraph().call(),
+            Number(await graveContract.methods.prayed().call())
+        );
+    }
+
     public async getGraves(limit:number, offset:number): Promise<Grave[]> {
         const graveContracts = await this.graveFactoryContract.methods.associatedGraves(limit, offset).call({from: this.accounts[0]});
         const graves:Grave[] = []
