@@ -23,4 +23,5 @@ export interface Web3Gateway {
     getGraves(limit:number, offset:number): Promise<Grave[]>
     getGraveCount(): Promise<number>
     createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
+    pray(address:string): Promise<number>
 }

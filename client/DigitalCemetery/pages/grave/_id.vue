@@ -96,8 +96,10 @@ export default class GraveCreate extends Vue {
     return duration.years;
   }
 
-  clickButtonClicked() {
-    console.log("clicked");
+  async clickButtonClicked() {
+    if(this.grave!=null) { 
+      this.grave.prayed = await this.web3Gateway.pray(this.graveAddress);
+    } 
   }
 }
 </script>
