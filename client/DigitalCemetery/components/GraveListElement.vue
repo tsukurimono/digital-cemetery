@@ -12,9 +12,10 @@
 <template>
   <v-card link exact :to="localePath({name: 'grave-id', params: {id: address}})" nuxt>
     <v-img
-      :src="defaultThumbnail"
+      :src="thumbnail"
       contain
       height="200px"
+      v-on:error="isInvalidThumbnail = true"
     ></v-img>
 
     <v-card-title>
@@ -31,7 +32,8 @@ import { DateTime } from "luxon";
 
 @Component
 export default class GraveListElement extends Vue {
-  private defaultThumbnail = require('@/assets/default-portrait.png')
+  private defaultThumbnail = "/default-portrait.png"
+  private isInvalidThumbnail = false
 
   @Prop({default: "0x0"})
   address!:string
@@ -45,7 +47,7 @@ export default class GraveListElement extends Vue {
   @Prop({default: 0})
   death!:number
 
-  @Prop({default: "https://<portrait-url>"})
+  @Prop({default: ""})
   portraitURL!:string
 
   get birthISOString() {
@@ -59,6 +61,10 @@ export default class GraveListElement extends Vue {
   get age() {
     const duration = DateTime.fromSeconds( this.death ).diff(DateTime.fromSeconds( this.birth ), ['year', 'month', 'day']);
     return duration.years;
+  }
+
+  get thumbnail() {
+    return this.portraitURL == "" || this.isInvalidThumbnail ? this.defaultThumbnail : this.portraitURL;
   }
 }
 </script>

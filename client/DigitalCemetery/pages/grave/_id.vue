@@ -16,9 +16,10 @@
         <v-col>
           <v-card>
             <v-img
-              :src="defaultThumbnail"
+              :src="thumbnail"
               contain
-              height="200px"
+              v-on:error="isInvalidThumbnail = true"
+              height="300px"
             ></v-img>
 
             <v-card-title>
@@ -49,7 +50,8 @@ import { DateTime } from "luxon";
 })
 
 export default class GraveCreate extends Vue {
-  private defaultThumbnail = require('@/assets/default-portrait.png')
+  private defaultThumbnail = "/default-portrait.png"
+  private isInvalidThumbnail = false
 
   private web3Gateway!:Web3Gateway
   private grave:Grave|null = null
@@ -100,6 +102,10 @@ export default class GraveCreate extends Vue {
     if(this.grave!=null) { 
       this.grave.prayed = await this.web3Gateway.pray(this.graveAddress);
     } 
+  }
+
+  get thumbnail() {
+    return this.gravePortraitURL && !this.isInvalidThumbnail ? this.gravePortraitURL : this.defaultThumbnail;
   }
 }
 </script>
