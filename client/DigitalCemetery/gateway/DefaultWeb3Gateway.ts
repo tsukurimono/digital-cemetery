@@ -30,6 +30,8 @@ declare global {
             epigraph(): {call():Promise<string>}
             prayed(): {call():Promise<number>}
             pray(): {send(param:any):Promise<void>}
+            inheritor(): {call():Promise<string>}
+            successor(): {call():Promise<string>}
         }
     }
 }
@@ -65,7 +67,9 @@ export class DefaultWeb3Gateway implements Web3Gateway {
             Number(await graveContract.methods.death().call()),
             await graveContract.methods.portraitURL().call(),
             await graveContract.methods.epigraph().call(),
-            Number(await graveContract.methods.prayed().call())
+            Number(await graveContract.methods.prayed().call()),
+            await graveContract.methods.inheritor().call(),
+            await graveContract.methods.successor().call()
         );
     }
 
@@ -83,7 +87,9 @@ export class DefaultWeb3Gateway implements Web3Gateway {
                 Number(await grave.methods.death().call()),
                 await grave.methods.portraitURL().call(),
                 await grave.methods.epigraph().call(),
-                Number(await grave.methods.prayed().call())
+                Number(await grave.methods.prayed().call()),
+                await grave.methods.inheritor().call(),
+                await grave.methods.successor().call()
                 ));
         });
         return graves;
@@ -109,5 +115,10 @@ export class DefaultWeb3Gateway implements Web3Gateway {
         await graveContract.methods.pray().send({from: this.accounts[0]});
 
         return await graveContract.methods.prayed().call();
+    }
+
+    public myAddress(): string {
+        console.log("hogehoge");
+        return this.accounts[0];
     }
 }

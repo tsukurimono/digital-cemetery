@@ -1,10 +1,24 @@
 <i18n>
 {
   "ja": {
-    "aged": "享年"
+    "aged": "享年",
+    "inheritor": "管理者",
+    "successor": "継承予定者",
+    "you": "あなた",
+    "edit": {
+      "epigraph": "メッセージを修正する",
+      "url": "画像のURLを修正する"
+    }
   },
   "en": {
-    "aged": "aged"
+    "aged": "aged",
+    "inheritor": "Inheritor",
+    "successor": "Successor",
+    "you": "You",
+    "edit": {
+      "epigraph": "Edit epigraph",
+      "url": "Edit PortraitURL"
+    }
   }
 }
 </i18n>
@@ -28,7 +42,46 @@
 
             <v-card-text> <code>{{ graveBirth }}</code> - <code>{{ graveDeath }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
             <v-card-text style="white-space: pre-line; word-wrap:break-word;"> {{ graveEpigraph }} </v-card-text>
-            <v-row><v-spacer/><v-col cols="1"><v-icon @click="clickButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} </v-col></v-row>
+            <v-row>
+              <v-col cols="1">
+                <v-menu 
+                  bottom 
+                  origin="center center" 
+                  transition="scale-transition" 
+                > 
+                  <template v-slot:activator="{ on, attrs }"> 
+                    <v-btn 
+                      v-bind="attrs" 
+                      v-on="on" 
+                      dense
+                      text
+                    ><v-icon>mdi-menu</v-icon> 
+                    </v-btn> 
+                  </template> 
+                  <v-list> 
+                    <v-list-item> 
+                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.epigraph') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item> 
+                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item> 
+                      <v-divider></v-divider>
+                    </v-list-item> 
+                    <v-list-item> 
+                      <v-list-item-title>{{ $t('inheritor') }}: <code>{{ graveInheritor }}</code> <span v-if="graveInheritor == myAddress">({{ $t('you') }})</span></v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item> 
+                      <v-list-item-title>{{ $t('successor') }}: <code>{{ graveSuccessor }}</code> <span v-if="graveSuccessor == myAddress">({{ $t('you') }})</span></v-list-item-title> 
+                    </v-list-item> 
+                  </v-list> 
+                </v-menu>
+              </v-col>
+              <v-spacer/>
+              <v-col cols="1">
+                <v-icon @click="clickButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} 
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -55,6 +108,7 @@ export default class GraveCreate extends Vue {
 
   private web3Gateway!:Web3Gateway
   private grave:Grave|null = null
+  private myAddress = ""
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
@@ -63,6 +117,7 @@ export default class GraveCreate extends Vue {
 
   async loadGrave() {
     this.grave = await this.web3Gateway.getGrave(this.graveAddress);
+    this.myAddress = await this.web3Gateway.myAddress();
   }
 
   get graveAddress() {
@@ -91,6 +146,14 @@ export default class GraveCreate extends Vue {
 
   get gravePrayed() {
     return this.grave?.prayed;
+  }
+
+  get graveInheritor() {
+    return this.grave?.inheritor;
+  }
+
+  get graveSuccessor() {
+    return this.grave?.successor;
   }
 
   get age() {

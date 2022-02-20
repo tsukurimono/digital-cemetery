@@ -6,8 +6,10 @@ export class Grave {
     epigraph: string
     prayed: number
     portraitURL: string
+    inheritor: string
+    successor: string
 
-    constructor(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string, prayed:number) {
+    constructor(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string, prayed:number, inheritor:string, successor:string) {
         this.address = address;
         this.name = name;
         this.birth = birth;
@@ -15,6 +17,8 @@ export class Grave {
         this.portraitURL = portraitURL;
         this.epigraph = epigraph;
         this.prayed = prayed;
+        this.inheritor = inheritor;
+        this.successor = successor;
     }
 }
 
@@ -24,4 +28,5 @@ export interface Web3Gateway {
     getGraveCount(): Promise<number>
     createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
     pray(address:string): Promise<number>
+    myAddress(): string
 }
