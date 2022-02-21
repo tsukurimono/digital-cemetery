@@ -8,8 +8,20 @@ export class Grave {
     portraitURL: string
     inheritor: string
     successor: string
+    isFinalized: boolean
 
-    constructor(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string, prayed:number, inheritor:string, successor:string) {
+    constructor(
+        address:string,
+        name:string, 
+        birth:number, 
+        death:number, 
+        portraitURL:string, 
+        epigraph:string, 
+        prayed:number, 
+        inheritor:string, 
+        successor:string,
+        isFinalized:boolean
+        ) {
         this.address = address;
         this.name = name;
         this.birth = birth;
@@ -19,6 +31,7 @@ export class Grave {
         this.prayed = prayed;
         this.inheritor = inheritor;
         this.successor = successor;
+        this.isFinalized = isFinalized;
     }
 }
 
@@ -27,6 +40,7 @@ export interface Web3Gateway {
     getGraves(limit:number, offset:number): Promise<Grave[]>
     getGraveCount(): Promise<number>
     createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
+    updateGrave(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
     pray(address:string): Promise<number>
     myAddress(): string
 }

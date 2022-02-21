@@ -6,7 +6,7 @@
     "successor": "継承予定者",
     "you": "あなた",
     "edit": {
-      "epigraph": "メッセージを修正する",
+      "grave": "お墓を修正する",
       "url": "画像のURLを修正する"
     }
   },
@@ -16,7 +16,7 @@
     "successor": "Successor",
     "you": "You",
     "edit": {
-      "epigraph": "Edit epigraph",
+      "grave": "Edit grave",
       "url": "Edit PortraitURL"
     }
   }
@@ -59,8 +59,8 @@
                     </v-btn> 
                   </template> 
                   <v-list> 
-                    <v-list-item> 
-                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.epigraph') }}</v-list-item-title> 
+                    <v-list-item link exact :to="localePath({name: 'grave-id-edit', params: {id: graveAddress}})" nuxt> 
+                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.grave') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item> 
                       <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.url') }}</v-list-item-title> 

@@ -21,16 +21,17 @@
       <v-form>
         <v-row>
           <v-col cols="12">
+            {{ isInheritor }}
             <v-alert
               dense
-              v-if="!isInheritor && graveAddress!=undefined"
+              v-if="!isInheritor || graveAddress==undefined"
               outlined
               type="error"
             >{{ $t('error.only-inheritor') }}
             </v-alert>
             <v-alert
               dense
-              v-if="isFinalized && graveAddress!=undefined"
+              v-if="isFinalized || graveAddress==undefined"
               outlined
               type="error"
             >{{ $t('error.before-finalized') }}
@@ -39,6 +40,7 @@
               label="Name"
               placeholder="Name"
               :counter="256"
+              :disabled="!isEditable"
               v-model="nameTextField"
               outlined
               dense
@@ -47,12 +49,12 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialBirth" pickerLabel="Day of birth" :disabled="!isEditable" @dateUpdate='birthTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialDeath" pickerLabel="Day of death" :disabled="!isEditable" @dateUpdate='deathTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
@@ -61,6 +63,7 @@
               label="PortraitURL"
               placeholder="PortraitURL"
               :counter="256"
+              :disabled="!isEditable"
               v-model="portraitURLTextField"
               outlined
               dense
@@ -72,6 +75,7 @@
             <v-textarea
               label="Epigraph"
               placeholder="Epigraph"
+              :disabled="!isEditable"
               v-model="epigraphTextarea"
               outlined
               dense
@@ -80,7 +84,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark v-on:click="createButtonClicked">Create</v-btn>
+            <v-btn block color="primary" dark :disabled="!isEditable" v-on:click="updateButtonClicked">Update</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -111,18 +115,55 @@ export default class GraveCreate extends Vue {
   private portraitURLTextField:string = ""
   private epigraphTextarea:string = ""
 
+  private initialBirth:string = "0000-00-00"
+  private initialDeath:string = "9999-12-31"
+  private inheritor:string = ""
+  private isFinalized:boolean = false
+
+  private grave:Grave|undefined = undefined
+  private myAddress = ""
+
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
+    this.myAddress = await this.web3Gateway.myAddress();
+    await this.loadGrave();
   }
 
-  createButtonClicked() {
-    this.web3Gateway.createGrave( 
+  async loadGrave() {
+    if(this.$route.params.id != undefined) {
+      this.grave = await this.web3Gateway.getGrave(this.graveAddress);
+
+      this.nameTextField = this.grave.name;
+      this.birthTextField = this.initialBirth = DateTime.fromSeconds( this.grave.birth ).toUTC().toISODate();
+      this.deathTextField = this.initialDeath = DateTime.fromSeconds( this.grave.death ).toUTC().toISODate();
+      this.portraitURLTextField = this.grave.portraitURL;
+      this.epigraphTextarea = this.grave.epigraph;
+      this.inheritor = this.grave.inheritor;
+      this.isFinalized = this.grave.isFinalized;
+    }
+  }
+
+  get graveAddress() {
+      return this.$route.params.id;
+  }
+
+  updateButtonClicked() {
+    this.web3Gateway.updateGrave( 
+      this.graveAddress,
       this.nameTextField, 
       DateTime.fromSQL(this.birthTextField, {zone: "utc"}).toLocal().toSeconds(),
       DateTime.fromSQL(this.deathTextField, {zone: "utc"}).toLocal().toSeconds(),
       this.portraitURLTextField,
       this.epigraphTextarea
       )
+  }
+
+  get isInheritor() {
+    return this.inheritor == this.myAddress;
+  }
+
+  get isEditable() {
+    return (this.isInheritor && !this.isFinalized) || this.grave == undefined;
   }
 }
 </script>

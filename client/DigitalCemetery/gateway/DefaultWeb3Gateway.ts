@@ -30,8 +30,10 @@ declare global {
             epigraph(): {call():Promise<string>}
             prayed(): {call():Promise<number>}
             pray(): {send(param:any):Promise<void>}
+            update(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
             inheritor(): {call():Promise<string>}
             successor(): {call():Promise<string>}
+            isFinalized(): {call():Promise<boolean>}
         }
     }
 }
@@ -69,7 +71,8 @@ export class DefaultWeb3Gateway implements Web3Gateway {
             await graveContract.methods.epigraph().call(),
             Number(await graveContract.methods.prayed().call()),
             await graveContract.methods.inheritor().call(),
-            await graveContract.methods.successor().call()
+            await graveContract.methods.successor().call(),
+            await graveContract.methods.isFinalized().call()
         );
     }
 
@@ -89,7 +92,8 @@ export class DefaultWeb3Gateway implements Web3Gateway {
                 await grave.methods.epigraph().call(),
                 Number(await grave.methods.prayed().call()),
                 await grave.methods.inheritor().call(),
-                await grave.methods.successor().call()
+                await grave.methods.successor().call(), 
+                await grave.methods.isFinalized().call()
                 ));
         });
         return graves;
@@ -109,6 +113,19 @@ export class DefaultWeb3Gateway implements Web3Gateway {
             ).send({from: this.accounts[0]});
     }
 
+    public async updateGrave(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+
+        await graveContract.methods.update( 
+            name, 
+            birth, 
+            death, 
+            portraitURL,
+            epigraph
+            ).send({from: this.accounts[0]});
+    }
+
     public async pray(address:string): Promise<number> {
         const contractObject:ContractObject = GraveContract;
         const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
@@ -118,7 +135,6 @@ export class DefaultWeb3Gateway implements Web3Gateway {
     }
 
     public myAddress(): string {
-        console.log("hogehoge");
         return this.accounts[0];
     }
 }

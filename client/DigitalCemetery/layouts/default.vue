@@ -33,7 +33,7 @@
             <v-list-item-title v-text="$t('menu.list')" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link exact :to="localePath({name: 'grave-create'})" nuxt>
+        <v-list-item link exact :to="localePath({name: 'grave-edit'})" nuxt>
           <v-list-item-action>
             <v-icon>mdi-chart-bubble</v-icon>
           </v-list-item-action>
