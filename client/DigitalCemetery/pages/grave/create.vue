@@ -21,20 +21,6 @@
       <v-form>
         <v-row>
           <v-col cols="12">
-            <v-alert
-              dense
-              v-if="!isInheritor && graveAddress!=undefined"
-              outlined
-              type="error"
-            >{{ $t('error.only-inheritor') }}
-            </v-alert>
-            <v-alert
-              dense
-              v-if="isFinalized && graveAddress!=undefined"
-              outlined
-              type="error"
-            >{{ $t('error.before-finalized') }}
-            </v-alert>
             <v-text-field
               label="Name"
               placeholder="Name"
