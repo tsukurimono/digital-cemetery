@@ -42,5 +42,6 @@ export interface Web3Gateway {
     createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
     updateGrave(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void>
     pray(address:string): Promise<number>
+    finalize(address:string): Promise<void>
     myAddress(): string
 }

@@ -30,6 +30,7 @@ declare global {
             epigraph(): {call():Promise<string>}
             prayed(): {call():Promise<number>}
             pray(): {send(param:any):Promise<void>}
+            finalize(): {send(param:any):Promise<void>}
             update(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
             inheritor(): {call():Promise<string>}
             successor(): {call():Promise<string>}
@@ -132,6 +133,12 @@ export class DefaultWeb3Gateway implements Web3Gateway {
         await graveContract.methods.pray().send({from: this.accounts[0]});
 
         return await graveContract.methods.prayed().call();
+    }
+
+    public async finalize(address:string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.finalize().send({from: this.accounts[0]});
     }
 
     public myAddress(): string {

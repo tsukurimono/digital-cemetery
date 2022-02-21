@@ -7,6 +7,8 @@
     "you": "あなた",
     "edit": {
       "grave": "お墓を修正する",
+      "finalize": "お墓を確定する",
+      "finalized": "確定済み",
       "url": "画像のURLを修正する"
     }
   },
@@ -17,6 +19,8 @@
     "you": "You",
     "edit": {
       "grave": "Edit grave",
+      "finalize": "Finalize",
+      "finalized": "Finalized",
       "url": "Edit PortraitURL"
     }
   }
@@ -59,8 +63,14 @@
                     </v-btn> 
                   </template> 
                   <v-list> 
-                    <v-list-item link exact :to="localePath({name: 'grave-id-edit', params: {id: graveAddress}})" nuxt> 
+                    <v-list-item link exact :to="localePath({name: 'grave-id-edit', params: {id: graveAddress}})" nuxt v-if="!isFinalized"> 
                       <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.grave') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item @click="finalizeButtonClicked" v-if="!isFinalized"> 
+                      <v-list-item-title><v-icon>mdi-check-outline</v-icon>{{ $t('edit.finalize') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item v-else> 
+                      <v-list-item-title><v-icon>mdi-check-outline</v-icon>{{ $t('edit.finalized') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item> 
                       <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
@@ -110,6 +120,8 @@ export default class GraveCreate extends Vue {
   private grave:Grave|null = null
   private myAddress = ""
 
+  private isFinalized:boolean = false
+
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
     await this.loadGrave();
@@ -118,6 +130,7 @@ export default class GraveCreate extends Vue {
   async loadGrave() {
     this.grave = await this.web3Gateway.getGrave(this.graveAddress);
     this.myAddress = await this.web3Gateway.myAddress();
+    this.isFinalized = this.grave.isFinalized;
   }
 
   get graveAddress() {
@@ -169,6 +182,10 @@ export default class GraveCreate extends Vue {
 
   get thumbnail() {
     return this.gravePortraitURL && !this.isInvalidThumbnail ? this.gravePortraitURL : this.defaultThumbnail;
+  }
+
+  finalizeButtonClicked() {
+    this.web3Gateway.finalize(this.graveAddress);
   }
 }
 </script>
