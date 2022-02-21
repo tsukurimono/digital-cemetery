@@ -56,6 +56,11 @@ contract("Grave", accounts => {
             assert.equal(actual, inheritor, "successor should be same as inheritor");
         });
 
+        it("isFinalized", async() => {
+            const actual = await grave.isFinalized();
+            assert.equal(actual, false, "isFinalized should be false");
+        });
+
         it("emits the Created event", async() => {
             const txHash = grave.transactionHash;
             const txResult = await truffleAssert.createTransactionResult(grave, txHash);
@@ -95,22 +100,35 @@ contract("Grave", accounts => {
         });
     });
 
-    describe("set epigraph", async() => {
+    describe("update", async() => {
+        const newName = "new name";
+        const newBirth = -1000;
+        const newDeath = 2000;
         const newEpigraph = "new epigraph";
+        const newPortraitURL = "https://new-digital-graves/boo/bar"
 
-        it("updated epigraph when called by inheritor account", async() => {
+        it("updated grave when called by inheritor account", async() => {
             try {
-                await grave.setEpigraph(newEpigraph, {from: inheritor});
-                const actual = await grave.epigraph();
-                assert.equal(actual, newEpigraph, "epigraph should match");
+                await grave.update(newName, newBirth, newDeath, newPortraitURL, newEpigraph, {from: inheritor});
             } catch(err) {
                 assert.fail("error shouldn't occur");
             }
+            const actualName = await grave.name();
+            const actualBirth = await grave.birth();
+            const actualDeath = await grave.death();
+            const actualEpigraph = await grave.epigraph();
+            const actualPortraitURL = await grave.portraitURL();
+
+            assert.equal(actualName, newName, "name should match");
+            assert.equal(actualBirth, newBirth, "birth should match");
+            assert.equal(actualDeath, newDeath, "death should match");
+            assert.equal(actualEpigraph, newEpigraph, "epigraph should match");
+            assert.equal(actualPortraitURL, newPortraitURL, "portalURL should match");
         });
 
         it("throws an error when called from non-inheritor account", async() => {
             try {
-                await grave.setEpigraph(newEpigraph, {from: accounts[1]});
+                await grave.update(newName, newBirth, newDeath, newPortraitURL, newEpigraph, {from: accounts[1]});
                 assert.fail("not restricted by inheritor");
             } catch(err) {
                 const expectedError = "Grave: caller is not the inheritor";
@@ -119,9 +137,65 @@ contract("Grave", accounts => {
             }
         });
 
-        it("emits EpigraphUpdated event", async() => {
-            const tx = await grave.setEpigraph(newEpigraph, {from: inheritor});
-            const expectedEvent = "EpigraphUpdated";
+        it("emits GraveUpdated event", async() => {
+            const tx = await grave.update(newName, newBirth, newDeath, newPortraitURL, newEpigraph, {from: inheritor});
+            const expectedEvent = "Updated";
+            const actualEvent = tx.logs[0].event;
+            assert.equal(actualEvent, expectedEvent, "events should match");
+        });
+
+        it("throws an error when called after it is finalized", async() => {
+            try {
+                await grave.finalize({from: inheritor});
+                await grave.update(newName, newBirth, newDeath, newPortraitURL, newEpigraph, {from: inheritor});
+                assert.fail("should be restricted after it is finalized");
+            } catch(err) {
+                const expectedError = "Grave: it's already been finalized";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+    });
+
+    describe("finalize", async() => {
+        it("success when called by inheritor", async() => {
+            try {
+                await grave.finalize({from: inheritor});
+            } catch(err) {
+                assert.fail("error shouldn't occur");
+            }
+            const actual = await grave.isFinalized();
+
+            assert.equal(actual, true, "isFinalized should be true");
+        });
+
+        it("throws an error when called from non-inheritor", async() => {
+            try {
+                await grave.finalize({from: accounts[1]});
+                assert.fail("not restricted by inheritor");
+            } catch(err) {
+                const expectedError = "Grave: caller is not the inheritor";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+
+        it("throws an error when called after finalized", async() => {
+            try {
+                await grave.finalize({from: inheritor});
+                await grave.finalize({from: inheritor}); // Error should occur.
+                assert.fail("not restricted once");
+            } catch(err) {
+                const expectedError = "Grave: it's already been finalized";
+                const actualError = err.reason;
+                assert.equal(actualError, expectedError, "should not be permitted");
+            }
+        });
+
+        it("emits Finalized event", async() => {
+            const tx = await grave.finalize({from: inheritor});
+
+            const expectedEvent = "Finalized";
             const actualEvent = tx.logs[0].event;
             assert.equal(actualEvent, expectedEvent, "events should match");
         });
