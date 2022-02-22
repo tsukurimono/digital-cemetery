@@ -148,6 +148,12 @@ export class DefaultWeb3Gateway implements Web3Gateway {
         await graveContract.methods.nominate(successor).send({from: this.accounts[0]});
     }
 
+    public async setPortraitURL(address: string, portraitURL: string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.setPortraitURL(portraitURL).send({from: this.accounts[0]});
+    }
+
     public myAddress(): string {
         return this.accounts[0];
     }

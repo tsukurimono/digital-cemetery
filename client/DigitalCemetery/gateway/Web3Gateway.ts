@@ -44,5 +44,6 @@ export interface Web3Gateway {
     pray(address:string): Promise<number>
     finalize(address:string): Promise<void>
     nominate(address:string, successor:string): Promise<void>
+    setPortraitURL(address:string, portraitURL:string): Promise<void>
     myAddress(): string
 }

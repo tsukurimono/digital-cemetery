@@ -77,8 +77,8 @@
                     <v-list-item link exact :to="localePath({name: 'grave-id-nominate', params: {id: graveAddress}})" nuxt> 
                       <v-list-item-title><v-icon>mdi-account-switch-outline</v-icon>{{ $t('edit.nominate') }}</v-list-item-title> 
                     </v-list-item> 
-                    <v-list-item> 
-                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
+                    <v-list-item link exact :to="localePath({name: 'grave-id-editportrait', params: {id: graveAddress}})" nuxt> 
+                      <v-list-item-title><v-icon>mdi-account-box-outline</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item> 
                       <v-divider></v-divider>
