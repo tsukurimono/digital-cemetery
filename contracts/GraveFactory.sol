@@ -23,7 +23,7 @@ contract GraveFactory {
 
     function associatedGraves(uint256 limit, uint256 offset) public view returns(Grave[] memory coll) {
         uint256 count = associatedGravesCount();
-        uint256 start = count - offset < 0 ? count : offset;
+        uint256 start = count < offset ? count : offset;
         uint256 currentLimit = limit > maxLimit ? maxLimit : limit;
         uint256 end = offset + currentLimit < count ? offset + currentLimit : count;
 

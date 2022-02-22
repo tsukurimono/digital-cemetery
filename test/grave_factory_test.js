@@ -46,64 +46,91 @@ contract("GraveFactory: operations", accounts => {
         }
     }
 
-    describe("varing limits", () => {
+    describe("associatedGravesCount", () => {
         let factory;
         const inheritor = accounts[1];
 
         beforeEach(async () => {
-            factory = await createFactory(20, inheritor);
+            factory = await createFactory(5, inheritor);
         });
 
-        it("returns 10 results when limit request is 10", async() => {
-            const graves = await factory.associatedGraves(10, 0, {from: inheritor});
-            assert.equal(graves.length, 10, "results size should be 10");
+        it("have some graves", async() => {
+            const actual = await factory.associatedGravesCount({from: inheritor});
+            assert.equal(5, actual, "results size should be same");
         });
 
-        it("returns 20 results when limit request is 20", async() => {
-            const graves = await factory.associatedGraves(20, 0, {from: inheritor});
-            assert.equal(graves.length, 20, "results size should be 20");
-        });
-
-        it("returns 30 results when limit request is 20", async() => {
-            const graves = await factory.associatedGraves(30, 0, {from: inheritor});
-            assert.equal(graves.length, 20, "results size should be 20");
+        it("have zero graves", async() => {
+            const actual = await factory.associatedGravesCount({from: accounts[2]});
+            assert.equal(0, actual, "results size should be same");
         });
     });
 
-    describe("varing offset", () => {
-        let factory;
-        const inheritor = accounts[1];
+    describe("associatedGraves", () => {
+        describe("varing limits", () => {
+            let factory;
+            const inheritor = accounts[1];
 
-        beforeEach(async () => {
-            factory = await createFactory(10, inheritor);
+            beforeEach(async () => {
+                factory = await createFactory(20, inheritor);
+            });
+
+            it("returns 10 results when limit request is 10", async() => {
+                const graves = await factory.associatedGraves(10, 0, {from: inheritor});
+                assert.equal(graves.length, 10, "results size should be 10");
+            });
+
+            it("returns 20 results when limit request is 20", async() => {
+                const graves = await factory.associatedGraves(20, 0, {from: inheritor});
+                assert.equal(graves.length, 20, "results size should be 20");
+            });
+
+            it("returns 30 results when limit request is 20", async() => {
+                const graves = await factory.associatedGraves(30, 0, {from: inheritor});
+                assert.equal(graves.length, 20, "results size should be 20");
+            });
         });
 
-        it("contains appropriate property: low boundary", async() => {
-            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
-            const grave = await GraveContract.at(graves[0]);
-            const actual = await grave.name();
-            assert.equal(actual, `${name} 0`, "name should match");
-        });
+        describe("varing offset", () => {
+            let factory;
+            const inheritor = accounts[1];
 
-        it("contains appropriate property: start in the middle", async() => {
-            const graves = await factory.associatedGraves(1, 1, {from: inheritor});
-            const grave = await GraveContract.at(graves[0]);
-            const actual = await grave.name();
-            assert.equal(actual, `${name} 1`, "name should match");
-        });
+            beforeEach(async () => {
+                factory = await createFactory(10, inheritor);
+            });
 
-        it("contains appropriate property: end at just high boundary", async() => {
-            const graves = await factory.associatedGraves(9, 1, {from: inheritor});
-            const grave = await GraveContract.at(graves[graves.length-1]);
-            const actual = await grave.name();
-            assert.equal(actual, `${name} 9`, "name should match");
-        });
+            it("contains appropriate property: low boundary", async() => {
+                const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+                const grave = await GraveContract.at(graves[0]);
+                const actual = await grave.name();
+                assert.equal(actual, `${name} 0`, "name should match");
+            });
 
-        it("contains appropriate property: exceeds high boundary", async() => {
-            const graves = await factory.associatedGraves(10, 5, {from: inheritor});
-            const grave = await GraveContract.at(graves[graves.length-1]);
-            const actual = await grave.name();
-            assert.equal(actual, `${name} 9`, "name should match");
+            it("contains appropriate property: start in the middle", async() => {
+                const graves = await factory.associatedGraves(1, 1, {from: inheritor});
+                const grave = await GraveContract.at(graves[0]);
+                const actual = await grave.name();
+                assert.equal(actual, `${name} 1`, "name should match");
+            });
+
+            it("contains appropriate property: end at just high boundary", async() => {
+                const graves = await factory.associatedGraves(9, 1, {from: inheritor});
+                const grave = await GraveContract.at(graves[graves.length-1]);
+                const actual = await grave.name();
+                assert.equal(actual, `${name} 9`, "name should match");
+            });
+
+            it("contains appropriate property: offset plus limits exceeds high boundary", async() => {
+                const graves = await factory.associatedGraves(10, 5, {from: inheritor});
+                const grave = await GraveContract.at(graves[graves.length-1]);
+                const actual = await grave.name();
+                assert.equal(actual, `${name} 9`, "name should match");
+            });
+
+            it("contains appropriate property: offset exceeds high boundary", async() => {
+                const graves = await factory.associatedGraves(10, 20, {from: inheritor});
+                const actual = graves.length;
+                assert.equal(0, actual, "length should be zero");
+            });
         });
     });
 
