@@ -36,7 +36,12 @@ contract GraveFactory {
     }
 
     function associateGrave(address graveAddress) public {
-        _graves[msg.sender].push(Grave(graveAddress));
+        Grave[] storage graves = _graves[msg.sender];
+        bool contain = false;
+        for(uint256 i=0; i<graves.length; i++) {
+            if(address(graves[i]) == graveAddress) contain = true;
+        }
+        if(!contain) graves.push(Grave(graveAddress));
     }
 
     function unassociateGrave(address graveAddress) public {

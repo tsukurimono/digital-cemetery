@@ -124,6 +124,14 @@ contract("GraveFactory: operations", accounts => {
             assert.equal(1, newAssociatedGravesCount - currentAssociatedGravesCount, "should increment by 1");
         });
 
+        it("associate graves which has already been associated", async () => {
+            const graves = await factory.associatedGraves(1, 0, {from: inheritor});
+            const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            await factory.associateGrave(graves[0], {from: inheritor});
+            const newAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
+            assert.equal(0, newAssociatedGravesCount - currentAssociatedGravesCount, "should be same");
+        });
+
         it("inheritor's association still remain", async () => {
             const graves = await factory.associatedGraves(1, 0, {from: inheritor});
             const currentAssociatedGravesCount = await factory.associatedGravesCount({from: inheritor});
