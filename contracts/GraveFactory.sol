@@ -54,4 +54,13 @@ contract GraveFactory {
         }
         if(contain) graves.pop();
     }
+
+    function isAssociated(address graveAddress) public view returns (bool) {
+        Grave[] storage graves = _graves[msg.sender];
+        bool contain = false;
+        for(uint256 i=0; i<graves.length; i++) {
+            if(address(graves[i]) == graveAddress) contain = true;
+        }
+        return contain;
+    }
 }

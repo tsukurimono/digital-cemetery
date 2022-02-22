@@ -141,6 +141,28 @@ contract("GraveFactory: operations", accounts => {
         });
     });
 
+    describe("isAssociate", () => {
+        let factory;
+        const inheritor = accounts[1];
+
+        beforeEach(async () => {
+            factory = await createFactory(10, inheritor);
+        });
+
+        it("returns true when the grave is associated to the account", async () => {
+            const graves = await factory.associatedGraves(1, 5, {from: inheritor});
+            const actual = await factory.isAssociated(graves[0], {from: inheritor});
+            assert.equal(true, actual, "should be true");
+        });
+
+        it("returns false when the grave is not associated to the account", async () => {
+            const graves = await factory.associatedGraves(1, 5, {from: inheritor});
+            await factory.unassociateGrave(graves[0], {from: inheritor});
+            const actual = await factory.isAssociated(graves[0], {from: inheritor});
+            assert.equal(false, actual, "should be false");
+        });
+    });
+
     describe("unassociateGrave", () => {
         let factory;
         const totalCount = 10;
