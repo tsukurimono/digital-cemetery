@@ -8,8 +8,11 @@
     "edit": {
       "grave": "お墓を修正する",
       "nominate": "継承者を指定する",
+      "inherit": "継承する",
       "finalize": "お墓を確定する",
       "finalized": "確定済み",
+      "associate": "自分に関連づける",
+      "unassociate": "自分への関連を削除する",
       "url": "画像のURLを修正する"
     }
   },
@@ -21,8 +24,11 @@
     "edit": {
       "grave": "Edit grave",
       "nominate": "Nominate",
+      "inherit": "Inherit",
       "finalize": "Finalize",
       "finalized": "Finalized",
+      "associate": "Associate",
+      "unassociate": "Unassociate",
       "url": "Edit PortraitURL"
     }
   }
@@ -75,7 +81,16 @@
                       <v-list-item-title><v-icon>mdi-check-outline</v-icon>{{ $t('edit.finalized') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-nominate', params: {id: graveAddress}})" nuxt> 
-                      <v-list-item-title><v-icon>mdi-account-switch-outline</v-icon>{{ $t('edit.nominate') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-account-arrow-right</v-icon>{{ $t('edit.nominate') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item @click="inheritButtonClicked" v-if="isSuccessor"> 
+                      <v-list-item-title><v-icon>mdi-account-arrow-left-outline</v-icon>{{ $t('edit.inherit') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item @click="associateButtonClicked"> 
+                      <v-list-item-title><v-icon>mdi-bookmark-check</v-icon>{{ $t('edit.associate') }}</v-list-item-title> 
+                    </v-list-item> 
+                    <v-list-item @click="unassociateButtonClicked"> 
+                      <v-list-item-title><v-icon>mdi-bookmark-off-outline</v-icon>{{ $t('edit.unassociate') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-editportrait', params: {id: graveAddress}})" nuxt> 
                       <v-list-item-title><v-icon>mdi-account-box-outline</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
@@ -125,6 +140,7 @@ export default class GraveCreate extends Vue {
   private grave:Grave|null = null
   private myAddress = ""
 
+  private successor:string = ""
   private isFinalized:boolean = false
 
   async mounted() {
@@ -136,6 +152,7 @@ export default class GraveCreate extends Vue {
     this.grave = await this.web3Gateway.getGrave(this.graveAddress);
     this.myAddress = await this.web3Gateway.myAddress();
     this.isFinalized = this.grave.isFinalized;
+    this.successor = this.grave.successor;
   }
 
   get graveAddress() {
@@ -191,6 +208,22 @@ export default class GraveCreate extends Vue {
 
   finalizeButtonClicked() {
     this.web3Gateway.finalize(this.graveAddress);
+  }
+
+  inheritButtonClicked() {
+    this.web3Gateway.inherit(this.graveAddress);
+  }
+
+  associateButtonClicked() {
+    this.web3Gateway.associate(this.graveAddress);
+  }
+
+  unassociateButtonClicked() {
+    this.web3Gateway.unassociate(this.graveAddress);
+  }
+
+  get isSuccessor() {
+    return this.successor == this.myAddress;
   }
 }
 </script>

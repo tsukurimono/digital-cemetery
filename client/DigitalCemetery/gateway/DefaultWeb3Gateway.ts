@@ -17,7 +17,8 @@ declare global {
             associatedGravesCount(): {call():Promise<number>}
             createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
             associatedGraves(limit:number, offset:number): {call(param:any):Promise<string[]>}
-            associateGrave(address:string): void
+            associateGrave(address:string): {send(param:any): Promise<void>}
+            unassociateGrave(address:string): {send(param:any): Promise<void>}
         }
     }
 
@@ -152,6 +153,20 @@ export class DefaultWeb3Gateway implements Web3Gateway {
         const contractObject:ContractObject = GraveContract;
         const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
         await graveContract.methods.setPortraitURL(portraitURL).send({from: this.accounts[0]});
+    }
+
+    public async inherit(address: string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.inherit().send({from: this.accounts[0]});
+    }
+
+    public async associate(address: string): Promise<void> {
+        await this.graveFactoryContract.methods.associateGrave(address).send({from: this.accounts[0]});
+    }
+
+    public async unassociate(address: string): Promise<void> {
+        await this.graveFactoryContract.methods.unassociateGrave(address).send({from: this.accounts[0]});
     }
 
     public myAddress(): string {
