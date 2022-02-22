@@ -7,6 +7,7 @@
     "you": "あなた",
     "edit": {
       "grave": "お墓を修正する",
+      "nominate": "継承者を指定する",
       "finalize": "お墓を確定する",
       "finalized": "確定済み",
       "url": "画像のURLを修正する"
@@ -19,6 +20,7 @@
     "you": "You",
     "edit": {
       "grave": "Edit grave",
+      "nominate": "Nominate",
       "finalize": "Finalize",
       "finalized": "Finalized",
       "url": "Edit PortraitURL"
@@ -72,6 +74,9 @@
                     <v-list-item v-else> 
                       <v-list-item-title><v-icon>mdi-check-outline</v-icon>{{ $t('edit.finalized') }}</v-list-item-title> 
                     </v-list-item> 
+                    <v-list-item link exact :to="localePath({name: 'grave-id-nominate', params: {id: graveAddress}})" nuxt> 
+                      <v-list-item-title><v-icon>mdi-account-switch-outline</v-icon>{{ $t('edit.nominate') }}</v-list-item-title> 
+                    </v-list-item> 
                     <v-list-item> 
                       <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
                     </v-list-item> 
@@ -89,7 +94,7 @@
               </v-col>
               <v-spacer/>
               <v-col cols="1">
-                <v-icon @click="clickButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} 
+                <v-icon @click="prayButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} 
               </v-col>
             </v-row>
           </v-card>
@@ -174,7 +179,7 @@ export default class GraveCreate extends Vue {
     return duration.years;
   }
 
-  async clickButtonClicked() {
+  async prayButtonClicked() {
     if(this.grave!=null) { 
       this.grave.prayed = await this.web3Gateway.pray(this.graveAddress);
     } 
