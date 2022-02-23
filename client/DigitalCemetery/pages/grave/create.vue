@@ -92,8 +92,8 @@ import { DateTime } from "luxon";
 export default class GraveCreate extends Vue {
   private web3Gateway!:Web3Gateway
   private nameTextField:string = ""
-  private birthTextField:string = ""
-  private deathTextField:string = ""
+  private birthTextField:string = "0000-01-01"
+  private deathTextField:string = "9999-12-31"
   private portraitURLTextField:string = ""
   private epigraphTextarea:string = ""
 
