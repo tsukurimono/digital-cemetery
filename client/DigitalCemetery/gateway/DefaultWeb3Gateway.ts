@@ -17,7 +17,9 @@ declare global {
             associatedGravesCount(): {call():Promise<number>}
             createGrave(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
             associatedGraves(limit:number, offset:number): {call(param:any):Promise<string[]>}
-            associateGrave(address:string): void
+            associateGrave(address:string): {send(param:any): Promise<void>}
+            unassociateGrave(address:string): {send(param:any): Promise<void>}
+            isAssociated(address:string): {call():Promise<boolean>}
         }
     }
 
@@ -29,6 +31,13 @@ declare global {
             portraitURL(): {call():Promise<string>}
             epigraph(): {call():Promise<string>}
             prayed(): {call():Promise<number>}
+            pray(): {send(param:any):Promise<void>}
+            finalize(): {send(param:any):Promise<void>}
+            nominate(successor:string): {send(param:any):Promise<void>}
+            update(name:string, birth:number, death:number, portraitURL:string, epigraph:string): {send(param:any):Promise<void>}
+            inheritor(): {call():Promise<string>}
+            successor(): {call():Promise<string>}
+            isFinalized(): {call():Promise<boolean>}
         }
     }
 }
@@ -53,6 +62,24 @@ export class DefaultWeb3Gateway implements Web3Gateway {
        return gateway;
     }
 
+    public async getGrave(address:string): Promise<Grave> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+
+        return new Grave(
+            address,
+            await graveContract.methods.name().call(),
+            Number(await graveContract.methods.birth().call()),
+            Number(await graveContract.methods.death().call()),
+            await graveContract.methods.portraitURL().call(),
+            await graveContract.methods.epigraph().call(),
+            Number(await graveContract.methods.prayed().call()),
+            await graveContract.methods.inheritor().call(),
+            await graveContract.methods.successor().call(),
+            await graveContract.methods.isFinalized().call()
+        );
+    }
+
     public async getGraves(limit:number, offset:number): Promise<Grave[]> {
         const graveContracts = await this.graveFactoryContract.methods.associatedGraves(limit, offset).call({from: this.accounts[0]});
         const graves:Grave[] = []
@@ -67,7 +94,10 @@ export class DefaultWeb3Gateway implements Web3Gateway {
                 Number(await grave.methods.death().call()),
                 await grave.methods.portraitURL().call(),
                 await grave.methods.epigraph().call(),
-                Number(await grave.methods.prayed().call())
+                Number(await grave.methods.prayed().call()),
+                await grave.methods.inheritor().call(),
+                await grave.methods.successor().call(), 
+                await grave.methods.isFinalized().call()
                 ));
         });
         return graves;
@@ -85,5 +115,66 @@ export class DefaultWeb3Gateway implements Web3Gateway {
             portraitURL,
             epigraph
             ).send({from: this.accounts[0]});
+    }
+
+    public async updateGrave(address:string, name:string, birth:number, death:number, portraitURL:string, epigraph:string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+
+        await graveContract.methods.update( 
+            name, 
+            birth, 
+            death, 
+            portraitURL,
+            epigraph
+            ).send({from: this.accounts[0]});
+    }
+
+    public async pray(address:string): Promise<number> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.pray().send({from: this.accounts[0]});
+
+        return await graveContract.methods.prayed().call();
+    }
+
+    public async finalize(address:string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.finalize().send({from: this.accounts[0]});
+    }
+
+    public async nominate(address:string, successor:string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.nominate(successor).send({from: this.accounts[0]});
+    }
+
+    public async setPortraitURL(address: string, portraitURL: string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.setPortraitURL(portraitURL).send({from: this.accounts[0]});
+    }
+
+    public async inherit(address: string): Promise<void> {
+        const contractObject:ContractObject = GraveContract;
+        const graveContract = new this.web3.eth.Contract(contractObject.abi, address);
+        await graveContract.methods.inherit().send({from: this.accounts[0]});
+    }
+
+    public async associate(address: string): Promise<void> {
+        await this.graveFactoryContract.methods.associateGrave(address).send({from: this.accounts[0]});
+    }
+
+    public async unassociate(address: string): Promise<void> {
+        await this.graveFactoryContract.methods.unassociateGrave(address).send({from: this.accounts[0]});
+    }
+
+    public async isAssociated(address: string): Promise<boolean> {
+        return await this.graveFactoryContract.methods.isAssociated(address).call();
+    }
+
+    public myAddress(): string {
+        return this.accounts[0];
     }
 }

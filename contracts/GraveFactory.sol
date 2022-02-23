@@ -23,7 +23,7 @@ contract GraveFactory {
 
     function associatedGraves(uint256 limit, uint256 offset) public view returns(Grave[] memory coll) {
         uint256 count = associatedGravesCount();
-        uint256 start = count - offset < 0 ? count : offset;
+        uint256 start = count < offset ? count : offset;
         uint256 currentLimit = limit > maxLimit ? maxLimit : limit;
         uint256 end = offset + currentLimit < count ? offset + currentLimit : count;
 
@@ -36,7 +36,12 @@ contract GraveFactory {
     }
 
     function associateGrave(address graveAddress) public {
-        _graves[msg.sender].push(Grave(graveAddress));
+        Grave[] storage graves = _graves[msg.sender];
+        bool contain = false;
+        for(uint256 i=0; i<graves.length; i++) {
+            if(address(graves[i]) == graveAddress) contain = true;
+        }
+        if(!contain) graves.push(Grave(graveAddress));
     }
 
     function unassociateGrave(address graveAddress) public {
@@ -48,5 +53,14 @@ contract GraveFactory {
             if(contain && i+1<graves.length) graves[i] = graves[i+1];
         }
         if(contain) graves.pop();
+    }
+
+    function isAssociated(address graveAddress) public view returns (bool) {
+        Grave[] storage graves = _graves[msg.sender];
+        bool contain = false;
+        for(uint256 i=0; i<graves.length; i++) {
+            if(address(graves[i]) == graveAddress) contain = true;
+        }
+        return contain;
     }
 }

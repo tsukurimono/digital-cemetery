@@ -4,6 +4,7 @@
       <v-row>
         <v-col cols="12" sm="6" md="6" lg="4" v-for="(item,index) in graves" :key="index">
           <grave-list-element 
+            :address="item.address"
             :name="item.name"
             :birth="item.birth"
             :death="item.death"
