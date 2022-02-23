@@ -9,8 +9,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - GraveCemetery',
-    title: 'GraveCemetery',
+    titleTemplate: '%s - DigitalCemetery',
+    title: 'DigitalCemetery',
     htmlAttrs: {
       lang: 'en'
     },

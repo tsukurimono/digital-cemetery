@@ -1,3 +1,20 @@
+<i18n>
+{
+  "ja": {
+    "error": {
+      "only-inheritor": "管理者だけが修正することができます。",
+      "before-finalized": "確定前のものだけが修正できます。"
+    }
+  },
+  "en": {
+    "error": {
+      "only-inheritor": "Only inheritor can change these information.",
+      "before-finalized": "You cannot modify after finalization."
+    }
+  }
+}
+</i18n>
+
 <template>
   <v-layout wrap>
     <v-flex xs12>
@@ -16,12 +33,12 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialBirth" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialDeath" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
@@ -38,7 +55,18 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark v-on:click="createButtonClicked">Create</v-btn>
+            <v-textarea
+              label="Epigraph"
+              placeholder="Epigraph"
+              v-model="epigraphTextarea"
+              outlined
+              dense
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-btn block color="primary" v-on:click="createButtonClicked">Create</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -64,9 +92,13 @@ import { DateTime } from "luxon";
 export default class GraveCreate extends Vue {
   private web3Gateway!:Web3Gateway
   private nameTextField:string = ""
-  private birthTextField:string = ""
-  private deathTextField:string = ""
+  private birthTextField:string = "0000-01-01"
+  private deathTextField:string = "9999-12-31"
   private portraitURLTextField:string = ""
+  private epigraphTextarea:string = ""
+
+  private initialBirth:string = "0000-01-01"
+  private initialDeath:string = "9999-12-31"
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
@@ -77,7 +109,8 @@ export default class GraveCreate extends Vue {
       this.nameTextField, 
       DateTime.fromSQL(this.birthTextField, {zone: "utc"}).toLocal().toSeconds(),
       DateTime.fromSQL(this.deathTextField, {zone: "utc"}).toLocal().toSeconds(),
-      this.portraitURLTextField
+      this.portraitURLTextField,
+      this.epigraphTextarea
       )
   }
 }

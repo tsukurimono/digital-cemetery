@@ -11,6 +11,7 @@
         <v-text-field
           v-model="date"
           :label="pickerLabel"
+          :disabled="disabled"
           prepend-icon="mdi-calendar"
           readonly
           v-bind="attrs"
@@ -42,6 +43,17 @@ export default class DatePickerElement extends Vue {
 
     @Prop({default: "Date-Picker"})
     pickerLabel!:string
+
+    @Prop({default: false})
+    disabled!:boolean
+
+    @Prop({default: ""})
+    initial!:string
+
+    @Watch("initial", {immediate: true})
+    onInitialChanged(val:string, oldVal:string) {
+        this.date = val;
+    }
 
     @Watch("menu")
     onMenuChanged(val:boolean, oldVal:boolean) {
