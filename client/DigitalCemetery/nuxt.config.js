@@ -22,7 +22,10 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    ],
+    base: {
+      href: 'router.base'
+    }
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
