@@ -33,12 +33,12 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialBirth" pickerLabel="Day of birth" @dateUpdate='birthTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <date-picker-element min="1900-01-01" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
+            <date-picker-element min="1900-01-01" :initial="initialDeath" pickerLabel="Day of death" @dateUpdate='deathTextField = $event' />
           </v-col>
         </v-row>
         <v-row>
@@ -66,7 +66,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark v-on:click="createButtonClicked">Create</v-btn>
+            <v-btn block color="primary" v-on:click="createButtonClicked">Create</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -96,6 +96,9 @@ export default class GraveCreate extends Vue {
   private deathTextField:string = ""
   private portraitURLTextField:string = ""
   private epigraphTextarea:string = ""
+
+  private initialBirth:string = "0000-01-01"
+  private initialDeath:string = "9999-12-31"
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();

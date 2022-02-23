@@ -40,6 +40,7 @@
               placeholder="PortraitURL"
               :counter="256"
               v-model="portraitURLTextField"
+              :disabled="!isInheritor"
               outlined
               dense
             ></v-text-field>
@@ -47,7 +48,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark v-on:click="updateButtonClicked">Update</v-btn>
+            <v-btn block color="primary" v-on:click="updateButtonClicked" :disabled="!isInheritor">Update</v-btn>
           </v-col>
         </v-row>
       </v-form>

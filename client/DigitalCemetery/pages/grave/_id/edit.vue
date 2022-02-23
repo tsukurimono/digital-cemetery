@@ -21,7 +21,6 @@
       <v-form>
         <v-row>
           <v-col cols="12">
-            {{ isInheritor }}
             <v-alert
               dense
               v-if="!isInheritor || graveAddress==undefined"
@@ -84,7 +83,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark :disabled="!isEditable" v-on:click="updateButtonClicked">Update</v-btn>
+            <v-btn block color="primary" :disabled="!isEditable" v-on:click="updateButtonClicked">Update</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -115,7 +114,7 @@ export default class GraveCreate extends Vue {
   private portraitURLTextField:string = ""
   private epigraphTextarea:string = ""
 
-  private initialBirth:string = "0000-00-00"
+  private initialBirth:string = "0000-01-01"
   private initialDeath:string = "9999-12-31"
   private inheritor:string = ""
   private isFinalized:boolean = false

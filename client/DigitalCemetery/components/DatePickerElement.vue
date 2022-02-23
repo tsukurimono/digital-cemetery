@@ -50,7 +50,7 @@ export default class DatePickerElement extends Vue {
     @Prop({default: ""})
     initial!:string
 
-    @Watch("initial")
+    @Watch("initial", {immediate: true})
     onInitialChanged(val:string, oldVal:string) {
         this.date = val;
     }
