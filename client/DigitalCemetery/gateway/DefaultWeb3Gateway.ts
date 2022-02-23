@@ -19,6 +19,7 @@ declare global {
             associatedGraves(limit:number, offset:number): {call(param:any):Promise<string[]>}
             associateGrave(address:string): {send(param:any): Promise<void>}
             unassociateGrave(address:string): {send(param:any): Promise<void>}
+            isAssociated(address:string): {call():Promise<boolean>}
         }
     }
 
@@ -167,6 +168,10 @@ export class DefaultWeb3Gateway implements Web3Gateway {
 
     public async unassociate(address: string): Promise<void> {
         await this.graveFactoryContract.methods.unassociateGrave(address).send({from: this.accounts[0]});
+    }
+
+    public async isAssociated(address: string): Promise<boolean> {
+        return await this.graveFactoryContract.methods.isAssociated(address).call();
     }
 
     public myAddress(): string {

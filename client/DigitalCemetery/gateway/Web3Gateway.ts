@@ -47,6 +47,7 @@ export interface Web3Gateway {
     inherit(address:string): Promise<void>
     associate(address:string): Promise<void>
     unassociate(address:string): Promise<void>
+    isAssociated(address:string): Promise<boolean>
     setPortraitURL(address:string, portraitURL:string): Promise<void>
     myAddress(): string
 }

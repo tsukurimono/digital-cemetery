@@ -89,10 +89,10 @@
                     <v-list-item @click="inheritButtonClicked" v-if="isSuccessor && !isInheritor"> 
                       <v-list-item-title><v-icon>mdi-account-arrow-left-outline</v-icon>{{ $t('edit.inherit') }}</v-list-item-title> 
                     </v-list-item> 
-                    <v-list-item @click="associateButtonClicked"> 
+                    <v-list-item @click="associateButtonClicked" v-if="!isAssociated"> 
                       <v-list-item-title><v-icon>mdi-bookmark-check</v-icon>{{ $t('edit.associate') }}</v-list-item-title> 
                     </v-list-item> 
-                    <v-list-item @click="unassociateButtonClicked"> 
+                    <v-list-item @click="unassociateButtonClicked" v-else> 
                       <v-list-item-title><v-icon>mdi-bookmark-off-outline</v-icon>{{ $t('edit.unassociate') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-editportrait', params: {id: graveAddress}})" nuxt> 
@@ -152,6 +152,7 @@ export default class GraveCreate extends Vue {
   private successor:string = ""
   private inheritor:string = ""
   private isFinalized:boolean = false
+  private isAssociated:boolean = false
 
   async mounted() {
     this.web3Gateway = await DefaultWeb3Gateway.build();
@@ -164,6 +165,7 @@ export default class GraveCreate extends Vue {
     this.isFinalized = this.grave.isFinalized;
     this.successor = this.grave.successor;
     this.inheritor = this.grave.inheritor;
+    this.isAssociated = await this.web3Gateway.isAssociated(this.graveAddress);
   }
 
   get graveAddress() {
