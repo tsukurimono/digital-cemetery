@@ -141,7 +141,7 @@ import { DateTime } from "luxon";
   }
 })
 
-export default class GraveCreate extends Vue {
+export default class GraveIDIndex extends Vue {
   private defaultThumbnail = "/default-portrait.png"
   private isInvalidThumbnail = false
 

@@ -47,7 +47,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-btn block color="primary" dark v-on:click="nominateButtonClicked">Nominate</v-btn>
+            <v-btn block color="primary" v-on:click="nominateButtonClicked">Nominate</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -66,7 +66,7 @@ import { DefaultWeb3Gateway } from "@/gateway/DefaultWeb3Gateway"; // TODO: Use 
   }
 })
 
-export default class GraveCreate extends Vue {
+export default class GraveIDNominate extends Vue {
   private web3Gateway!:Web3Gateway
   private successorAddressTextField:string = ""
 

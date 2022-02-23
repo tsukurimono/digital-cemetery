@@ -67,7 +67,7 @@ import { DefaultWeb3Gateway } from "@/gateway/DefaultWeb3Gateway"; // TODO: Use 
   }
 })
 
-export default class GraveCreate extends Vue {
+export default class GraveEditPortrait extends Vue {
   private web3Gateway!:Web3Gateway
   private portraitURLTextField:string = ""
 

@@ -106,7 +106,7 @@ import { DateTime } from "luxon";
   }
 })
 
-export default class GraveCreate extends Vue {
+export default class GraveEdit extends Vue {
   private web3Gateway!:Web3Gateway
   private nameTextField:string = ""
   private birthTextField:string = ""
