@@ -32,7 +32,7 @@ import { DateTime } from "luxon";
 
 @Component
 export default class GraveListElement extends Vue {
-  private defaultThumbnail = "/default-portrait.png"
+  private defaultThumbnail = "default-portrait.png"
   private isInvalidThumbnail = false
 
   @Prop({default: "0x0"})

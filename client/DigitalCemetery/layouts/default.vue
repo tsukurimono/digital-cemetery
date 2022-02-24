@@ -72,7 +72,8 @@
 import { Component, Vue, Watch } from 'nuxt-property-decorator';
 
 @Component({
-  components: {}
+  components: {
+  } 
 })
 
 export default class DefaultLayout extends Vue {
