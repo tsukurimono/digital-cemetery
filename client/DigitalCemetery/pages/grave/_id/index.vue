@@ -2,40 +2,48 @@
 {
   "ja": {
     "aged": "享年",
-    "inheritor": "管理者",
-    "successor": "継承予定者",
-    "you": "あなた",
-    "state": {
-      "editable": "修正可能",
-      "finalized": "確定済み"
-    },
-    "edit": {
+    "action": {
       "grave": "お墓を修正する",
       "nominate": "継承者を指定する",
       "inherit": "継承する",
       "finalize": "お墓を確定する",
       "associate": "自分に関連づける",
       "unassociate": "自分への関連を削除する",
-      "url": "画像のURLを修正する"
+      "url": "画像のURLを修正する",
+      "information": "ステータスを表示する"
+    },
+    "properties": {
+      "status": "お墓の状態",
+      "inheritor": "管理者", 
+      "successor": "継承予定者", 
+      "you": "あなた", 
+      "state": { 
+        "editable": "修正可能", 
+        "finalized": "確定済み" 
+      }
     }
   },
   "en": {
     "aged": "aged",
-    "inheritor": "Inheritor",
-    "successor": "Successor",
-    "you": "You",
-    "state": {
-      "editable": "Editable",
-      "finalized": "Finalized"
-    },
-    "edit": {
+    "action": {
       "grave": "Edit grave",
       "nominate": "Nominate",
       "inherit": "Inherit",
       "finalize": "Finalize",
       "associate": "Associate",
       "unassociate": "Unassociate",
-      "url": "Edit PortraitURL"
+      "url": "Edit PortraitURL",
+      "information": "Show status"
+    },
+    "properties": {
+      "status": "Grave status",
+      "inheritor": "Inheritor", 
+      "successor": "Successor", 
+      "you": "You", 
+      "state": { 
+        "editable": "Editable", 
+        "finalized": "Finalized" 
+      }
     }
   }
 }
@@ -60,8 +68,8 @@
 
             <v-card-text> <code>{{ graveBirth }}</code> - <code>{{ graveDeath }}</code> ({{ $t('aged') }} {{ age }})</v-card-text>
             <v-card-text style="white-space: pre-line; word-wrap:break-word;"> {{ graveEpigraph }} </v-card-text>
-            <v-row>
-              <v-col cols="1">
+            <v-row align="center">
+              <v-col cols="3" class="text-left">
                 <v-menu 
                   bottom 
                   origin="center center" 
@@ -78,48 +86,61 @@
                   </template> 
                   <v-list> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-edit', params: {id: graveAddress}})" nuxt v-if="!isFinalized"> 
-                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('edit.grave') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-pencil</v-icon>{{ $t('action.grave') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item @click="finalizeButtonClicked" v-if="!isFinalized"> 
-                      <v-list-item-title><v-icon>mdi-check</v-icon>{{ $t('edit.finalize') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-check</v-icon>{{ $t('action.finalize') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-nominate', params: {id: graveAddress}})" nuxt v-if="isInheritor"> 
-                      <v-list-item-title><v-icon>mdi-account-arrow-right</v-icon>{{ $t('edit.nominate') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-account-arrow-right</v-icon>{{ $t('action.nominate') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item @click="inheritButtonClicked" v-if="isSuccessor && !isInheritor"> 
-                      <v-list-item-title><v-icon>mdi-account-arrow-left-outline</v-icon>{{ $t('edit.inherit') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-account-arrow-left-outline</v-icon>{{ $t('action.inherit') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item @click="associateButtonClicked" v-if="!isAssociated"> 
-                      <v-list-item-title><v-icon>mdi-bookmark-check</v-icon>{{ $t('edit.associate') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-bookmark-check</v-icon>{{ $t('action.associate') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item @click="unassociateButtonClicked" v-else> 
-                      <v-list-item-title><v-icon>mdi-bookmark-off-outline</v-icon>{{ $t('edit.unassociate') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-bookmark-off-outline</v-icon>{{ $t('action.unassociate') }}</v-list-item-title> 
                     </v-list-item> 
                     <v-list-item link exact :to="localePath({name: 'grave-id-editportrait', params: {id: graveAddress}})" nuxt> 
-                      <v-list-item-title><v-icon>mdi-account-box-outline</v-icon>{{ $t('edit.url') }}</v-list-item-title> 
+                      <v-list-item-title><v-icon>mdi-account-box-outline</v-icon>{{ $t('action.url') }}</v-list-item-title> 
                     </v-list-item> 
-                    <v-list-item> 
-                      <v-divider></v-divider>
-                    </v-list-item> 
-                    <v-list-item v-if="isFinalized"> 
-                      <v-list-item-title><v-icon>mdi-checkbox-marked-outline</v-icon>{{ $t('state.finalized') }}</v-list-item-title> 
-                    </v-list-item> 
-                    <v-list-item v-else> 
-                      <v-list-item-title><v-icon>mdi-checkbox-blank-outline</v-icon>{{ $t('state.editable') }}</v-list-item-title> 
-                    </v-list-item> 
-                    <v-list-item> 
-                      <v-list-item-title>{{ $t('inheritor') }}: <code>{{ graveInheritor }}</code> <span v-if="graveInheritor == myAddress">({{ $t('you') }})</span></v-list-item-title> 
-                    </v-list-item> 
-                    <v-list-item> 
-                      <v-list-item-title>{{ $t('successor') }}: <code>{{ graveSuccessor }}</code> <span v-if="graveSuccessor == myAddress">({{ $t('you') }})</span></v-list-item-title> 
+                    <v-list-item @click="informationButtonClicked"> 
+                      <v-list-item-title><v-icon>mdi-information-outline</v-icon>{{ $t('action.information') }}</v-list-item-title> 
                     </v-list-item> 
                   </v-list> 
                 </v-menu>
               </v-col>
               <v-spacer/>
-              <v-col cols="1">
+              <v-col cols="3" class="text-right pr-10">
                 <v-icon @click="prayButtonClicked">mdi-hands-pray</v-icon> {{ gravePrayed }} 
               </v-col>
+              <v-dialog 
+                v-model="showProperties" 
+                width="500" 
+              > 
+                <v-card> 
+                  <v-card-title>{{ $t('properties.status') }}</v-card-title> 
+                  <v-card-text v-if="isFinalized">{{ $t('properties.state.finalized') }}</v-card-text> 
+                  <v-card-text v-else>{{ $t('properties.state.editable') }}</v-card-text> 
+                  <v-card-title>{{ $t('properties.inheritor') }}</v-card-title> 
+                  <v-card-text><code>{{ graveInheritor }}</code> <span v-if="graveInheritor == myAddress">({{ $t('properties.you') }})</span></v-card-text> 
+                  <v-card-title>{{ $t('properties.successor') }}</v-card-title> 
+                  <v-card-text><code>{{ graveSuccessor }}</code> <span v-if="graveSuccessor == myAddress">({{ $t('properties.you') }})</span></v-card-text> 
+                  <v-divider></v-divider> 
+                  <v-card-actions> 
+                    <v-spacer></v-spacer> 
+                    <v-btn 
+                      color="primary" 
+                      text 
+                      @click="showProperties = false" 
+                    > 
+                      Close
+                    </v-btn> 
+                  </v-card-actions> 
+                </v-card> 
+              </v-dialog>
             </v-row>
           </v-card>
         </v-col>
@@ -144,6 +165,8 @@ import { DateTime } from "luxon";
 export default class GraveIDIndex extends Vue {
   private defaultThumbnail = "default-portrait.png"
   private isInvalidThumbnail = false
+
+  private showProperties:boolean = false
 
   private web3Gateway!:Web3Gateway
   private grave:Grave|null = null
@@ -233,6 +256,10 @@ export default class GraveIDIndex extends Vue {
 
   unassociateButtonClicked() {
     this.web3Gateway.unassociate(this.graveAddress);
+  }
+
+  informationButtonClicked() {
+    this.showProperties = true;
   }
 
   get isSuccessor() {

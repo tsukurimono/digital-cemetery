@@ -63,7 +63,7 @@
     <v-footer
       app
     >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>&copy; 2022 - {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
