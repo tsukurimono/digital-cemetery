@@ -17,8 +17,9 @@ export default class Redirect extends Vue {
         if(this.$route.query.p == '') {
             this.$router.push('/');
         }
-        const uri:string = query.replace(this.$router.options.base ?? '', '');
+        const uri:string = query.replace(this.$router.options.base ?? '', '/');
       console.log(uri);
+      console.log(this.$router.resolve(uri));
         if(this.$router.resolve(uri).resolved.matched.length > 0) {
           console.log("before push");
             this.$router.push(uri);
