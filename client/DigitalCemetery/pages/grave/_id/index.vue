@@ -125,9 +125,9 @@
                   <v-card-text v-if="isFinalized">{{ $t('properties.state.finalized') }}</v-card-text> 
                   <v-card-text v-else>{{ $t('properties.state.editable') }}</v-card-text> 
                   <v-card-title>{{ $t('properties.inheritor') }}</v-card-title> 
-                  <v-card-text><code>{{ graveInheritor }}</code> <span v-if="graveInheritor == myAddress">({{ $t('properties.you') }})</span></v-card-text> 
+                  <v-card-text><code>{{ graveInheritor }}</code> <span v-if="isInheritor">({{ $t('properties.you') }})</span></v-card-text> 
                   <v-card-title>{{ $t('properties.successor') }}</v-card-title> 
-                  <v-card-text><code>{{ graveSuccessor }}</code> <span v-if="graveSuccessor == myAddress">({{ $t('properties.you') }})</span></v-card-text> 
+                  <v-card-text><code>{{ graveSuccessor }}</code> <span v-if="isSuccessor">({{ $t('properties.you') }})</span></v-card-text> 
                   <v-divider></v-divider> 
                   <v-card-actions> 
                     <v-spacer></v-spacer> 
