@@ -210,6 +210,6 @@ export class DefaultWeb3Gateway implements Web3Gateway {
     }
 
     public myAddress(): string {
-        return this.accounts[0];
+        return this.web3.utils.toChecksumAddress(this.accounts[0]);
     }
 }
